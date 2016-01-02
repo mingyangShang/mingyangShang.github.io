@@ -45,46 +45,6 @@
 		
 
 		
-			<div class="switch-btn">
-				<div class="icon">
-					<div class="icon-ctn">
-						<div class="icon-wrap icon-house" data-idx="0">
-							<div class="birdhouse"></div>
-							<div class="birdhouse_holes"></div>
-						</div>
-						<div class="icon-wrap icon-ribbon hide" data-idx="1">
-							<div class="ribbon"></div>
-						</div>
-						
-						<div class="icon-wrap icon-link hide" data-idx="2">
-							<div class="loopback_l"></div>
-							<div class="loopback_r"></div>
-						</div>
-						
-						
-						<div class="icon-wrap icon-me hide" data-idx="3">
-							<div class="user"></div>
-							<div class="shoulder"></div>
-						</div>
-						
-					</div>
-					
-				</div>
-				<div class="tips-box hide">
-					<div class="tips-arrow"></div>
-					<ul class="tips-inner">
-						<li>菜单</li>
-						<li>標籤</li>
-						
-						<li>友情链接</li>
-						
-						
-						<li>關於</li>
-						
-					</ul>
-				</div>
-			</div>
-		
 
 		<div class="switch-area">
 			<div class="switch-wrap">
@@ -114,38 +74,14 @@
 				</section>
 				
 				
-				<section class="switch-part switch-part2">
-					<div class="widget tagcloud" id="js-tagcloud">
-						
-					</div>
-				</section>
 				
-				
-				
-				<section class="switch-part switch-part3">
-					<div id="js-friends">
-					
-			          <a target="_blank" class="main-nav-link switch-friends-link" href="http://localhost:4000/">奥巴马的博客</a>
-			        
-			          <a target="_blank" class="main-nav-link switch-friends-link" href="http://localhost:4000/">卡卡的美丽传说</a>
-			        
-			          <a target="_blank" class="main-nav-link switch-friends-link" href="http://localhost:4000/">本泽马的博客</a>
-			        
-			          <a target="_blank" class="main-nav-link switch-friends-link" href="http://localhost:4000/">吉格斯的博客</a>
-			        
-			          <a target="_blank" class="main-nav-link switch-friends-link" href="http://localhost:4000/">习大大大不同</a>
-			        
-			          <a target="_blank" class="main-nav-link switch-friends-link" href="http://localhost:4000/">托蒂的博客</a>
-			        
-			        </div>
-				</section>
 				
 
 				
 				
-				<section class="switch-part switch-part4">
+				<section class="switch-part switch-part3">
 				
-					<div id="js-aboutme">大连理工大学本科毕业，曾为阿里巴巴天猫无线实习生、腾讯MIG职实习生。熟悉android 开发，爱读书、爱打台球、爱技术，崇尚简洁的美。&lt;br /&gt;干自己该干的事，做自己想做的人。</div>
+					<div id="js-aboutme">大连理工大学本科毕业，曾为阿里巴巴天猫无线实习生、腾讯MIG职实习生。熟悉android 开发，爱读书、爱打台球、爱技术，崇尚简洁的美。干自己该干的事，做自己想做的人。</div>
 				</section>
 				
 			</div>
@@ -228,169 +164,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>这不是一本具体算法的讲解或者代码编写的教程，但是从书中的字里行间，我们可以学到的是更多的<strong>软知识</strong>:<strong>对编程新的认识、更加发散的思维方式、更严格的代码要求、堪比瑞士军刀的小技巧</strong>…… 编程也许入门并不难，但是要想真正成为一名优秀的软件工程师，还是需要很多锤炼。<strong>内外兼修，方成大器。</strong></p>
-<hr>
-<h3 id="u57FA_u7840_u7BC7"><a href="#u57FA_u7840_u7BC7" class="headerlink" title="基础篇"></a><strong>基础篇</strong></h3><ul>
-<li><p><strong><font size="+1">第一章 开篇</font></strong></p>
-<p>  首先作者提出一个实际问题：</p>
-<blockquote>
-<p>如何给磁盘的某个文件排序，更具体来说就是是对一个最多包含1千万条记录，每条记录都是7位整数的文件，而且只有1MB的内存可以使用</p>
-</blockquote>
-<p>  从实际问题中提炼出更明确的数学定义：</p>
-<blockquote>
-<p>输入：一个最多包含n个整数的文件，每个数都小于n，其中n=10^7。可以保证输入文件中不存在重复整数<br>  输出：按升序排列的输入整数的列表<br>  约束：1MB左右的内存空间，充足的磁盘存储空间。运行时间最多几分钟，控制在10秒内不再需要进一步优化</p>
-</blockquote>
-<p>   考虑一般的解法，直接读入所有的整数，然后进行快排堆排之类的排序，时间复杂度很明显是O(nlogn),但空间复杂度是O(n),即如果n=10^7时，用4个字节的int型存储每个整数，那么需要的空间是(4*10<sup>7</sup>)/2<sup>10</sup>2<sup>10</sup>=38MB,很显然超出了内存限制，而考虑实际n的大小限制和每个整数只会出现一次的限制，而所谓的排序也只是把从文件中的整数按在1－n内出现的顺序输出而已，因此只要对n之内出现的整数做一下标记最后输出标记过的整数就可以了，考虑到这，位向量（也叫位图）就成了比较合适的数据结构的选择，每个位的0、1值表示一个数字是否出现过，实现的时间复杂度为O(n),空间复杂度为O(n),考虑n取最大值10^7时，需要的空间为10<sup>7</sup>/8/2<sup>10</sup>/2<sup>10</sup>=1.2MB,代码实现如下：</p>
-  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">   <span class="preprocessor">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line">   <span class="preprocessor">#<span class="keyword">include</span> <span class="string">&lt;fstream&gt;</span></span></span><br><span class="line">   <span class="preprocessor">#<span class="keyword">include</span> <span class="string">&lt;bitset&gt;</span></span></span><br><span class="line">   <span class="preprocessor">#<span class="keyword">include</span> <span class="string">&lt;string.h&gt;</span></span></span><br><span class="line">   <span class="preprocessor">#<span class="keyword">define</span> N <span class="number">1000000</span></span></span><br><span class="line">   <span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line">   <span class="function"><span class="keyword">void</span> <span class="title">intSort</span><span class="params">()</span></span>&#123;</span><br><span class="line">       <span class="built_in">bitset</span>&lt;N&gt; numBits;</span><br><span class="line">       ifstream = testFile(<span class="string">"/Users/smy/temp/data.txt"</span>);</span><br><span class="line">        <span class="built_in">string</span> s;</span><br><span class="line">        <span class="keyword">int</span> count = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">while</span>(testFile &gt;&gt; s)&#123;</span><br><span class="line">            numBits[atoi(s.c_str())-<span class="number">1</span>] = <span class="number">1</span>;</span><br><span class="line">            ++count;</span><br><span class="line">        &#125;</span><br><span class="line">        testFile.close();</span><br><span class="line">    </span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;N;++i)&#123;</span><br><span class="line">            <span class="keyword">if</span>(numBits[i] == <span class="number">1</span>)&#123;</span><br><span class="line">                <span class="built_in">cout</span>&lt;&lt;i+<span class="number">1</span>&lt;&lt;endl;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> * argv[])</span> </span>&#123;</span><br><span class="line">        intSort();</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>  那么进一步考虑：</p>
-<blockquote>
-<p>如果严格限制程序占用内存不能超过1M，应该怎么处理？<br>如果每个数最多出现10次，又应该如何改动算法？所用存储空间是怎样变化的呢？</p>
-</blockquote>
-<p>  在解决这个实际问题的方案中，我们看到了不同于比较排序的一种排序方式：<strong>位向量排序</strong>，而且从这个问题中也引出了作者的一些思考和对读者的启示：</p>
-<ul>
-<li><strong>做一个”懒”工程师</strong>：处理问题时，即便是一看上去就知道解法的问题，不要马上动手编写代码，花些时间去明确问题，抽象问题模型，结合问题的特点去分析，等灵光一现时再动手。作者在解决上题时首先是对问题进行了数学定义，考虑到问题中数据的特点以向量的方式解决了问题并且时间复杂度和空间复杂度都较低。这样的方式不仅能收到更好的编码效果，考虑的情况会更加完善，调试起来的时间也会缩短，而且经过深度思考再动手的印象要深刻的多，等之后再遇到类似的问题时，马上就会涌现解决问题的思路，这样才能积累真正的经验。</li>
-<li><strong>时间和空间可以是双赢的</strong>：确实很多时候也许我们会在时间和空间之间做折中的选择，但是这种折中一定应该是在我们仔细分析了某方面不能再有改善的情况下，而很多情况下因为自己算法能力的不足和思维能力的局限，也许自己的算法可以在时间和空间双重优化，这就要求一方面自己要深度思考当前算法的优化空间，另一方面可以向更优秀的人请教是否有完全不同但是可以达到更好效果的方法或者对自己算法的建议，如果确实确定要做折中处理的话，要明确问题对时间和空间要求的严格性和最大容忍限度，然后在合理牺牲某方面的前提下向预定目标靠拢。</li>
-<li><strong>简单的设计</strong>：“设计者确定其设计已经达到了完美的标准不是不能再增加任何东西，而是不能再减少任何东西”，在满足要求的前提下尽量让设计简洁，有利于今后的扩展和排错，“大道至简“，设计需要的也许更多是简洁的美。</li>
-</ul>
-</li>
-<li><p><strong><font size="+1">第二章 啊哈！算法</font></strong></p>
-<blockquote>
-<ol>
-<li>给定一个最多包含m=40亿个随机排列的n=32位整数的顺序文件，找出一个不在文件中的32位整数。在内存足够的情况下如何解决该问题？如果有几个外部的“临时文件“可用，但是仅有几百字节的内存，又该如何处理？</li>
-<li>将一个n元一维向量想做旋转i个位置(如对n=3元向量“abc“，当i＝1时，结果为“bca“)</li>
-<li>给定一个英文字典，找出其中的所有变位词集合。（变位词指的包含相同数量相同字母的单词，因为他们通过调整字母的顺序可以变为一个单词所以叫变位词，如”stop”和”tops”和”pots”）</li>
-</ol>
-</blockquote>
-<p>  对于问题1，首先明确一下肯定是存在整数不在文件中的，因为32位整数最多可以表示的数字是2^32=4294967296&gt;4000000000<br>  （1）在内存充足的情况下，可以用上述位向量的做法，初始化2^32个位为0，每读到一个数字就将对应下标的位数组的值置为1，最后统计值仍为0的元素就是没有出现过的整数，这样的做法时间复杂度是O(2^n),空间占用大约为O（2<sup>n</sup>/8）B,当n＝32时占用空间大小约为2<sup>n</sup>/8/2<sup>10</sup>/2<sup>10</sup>=512MB<br>  （2）内存不够有临时文件可以使用时，又该如何做呢？既然有临时文件可以用，那可以将原来大文件中的数字分配到临时文件中，当临时文件的规模够小时再采用上面说的位向量的算法。分配可以采用散列的方法，比如通过简单的模上临时文件的个数将结果相同的聚合到一个文件，判断缺失元素在哪个文件的方法是在向临时文件插入元素的时候统计每个临时文件的数字个数，因为我们是可以知道根据我们选定的散列算法在没有元素缺失情况下的数字个数k的，那么这样就只需要比较散列完成后临时文件的个数与k比较，如果比k小的话那么这个临时文件中就存在缺失元素，接下来以这个临时文件为主文件，再次采用前面所说的散列方法（此时散列算法的参数可能需要调整）如此迭代下去直到限制的内存空间足以承载包含缺失元素的文件规模时，回到第一种情况处理。 可以看到这也体现了二分搜索的思想，只不过是以文件包含的一系列整数为范围，用包含这些整数的文件表示这个范围，通过比较文件中整数个数与期望个数判定缺失元素所在文件范围，从而达到了缩小问题规模的效果将问题转换成内存充足的情况。</p>
-<p>  对于问题二，看起来比较简单，代码实现起来也不难，不过作者提供的几个巧妙的算法倒让人耳目一新。<br>  我一开始的想法是作者所说的“杂技算法“， </p>
-  <figure class="highlight axapta"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> rotate(string <span class="keyword">str</span>,<span class="keyword">int</span> k)&#123;</span><br><span class="line">    <span class="keyword">int</span> len = <span class="keyword">str</span>.length();</span><br><span class="line">    <span class="keyword">if</span>(len &gt; <span class="number">1</span> &amp;&amp; k % len != <span class="number">0</span>)&#123;</span><br><span class="line">	    <span class="comment">//控制k在［1，len－1］内方便下标操作</span></span><br><span class="line">        k = (k &gt; len) ? k%len : k;</span><br><span class="line">        k = (k &lt; <span class="number">0</span>) ? k+len : k;</span><br><span class="line">        <span class="keyword">char</span> curr_val = <span class="keyword">str</span>[k]; <span class="comment">//将被调整的值</span></span><br><span class="line">        <span class="keyword">int</span> to_pos = <span class="number">0</span>; <span class="comment">//将被调整到的位置</span></span><br><span class="line">        <span class="keyword">char</span> to_val = <span class="keyword">str</span>[to_pos]; <span class="comment">//现在将被调整到的位置对应的值</span></span><br><span class="line">        <span class="keyword">int</span> <span class="keyword">count</span> = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">while</span> (<span class="keyword">count</span> != len) &#123;</span><br><span class="line">            <span class="keyword">str</span>[to_pos] = curr_val;</span><br><span class="line">            curr_val = to_val;</span><br><span class="line">            to_pos = (to_pos-k+len)%len;</span><br><span class="line">            to_val = <span class="keyword">str</span>[to_pos];</span><br><span class="line">            ++<span class="keyword">count</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    cout&lt;&lt;<span class="keyword">str</span>&lt;&lt;endl;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>  时间复杂度为O(n),额外的空间复杂度为O(1),比较理想的一种算法，不过先不要满足，再来看一种跌破眼睛却又不得不为之叫好的算法</p>
-  <figure class="highlight axapta"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> rotate2(string <span class="keyword">str</span>,<span class="keyword">int</span> k)&#123;</span><br><span class="line">    <span class="comment">//假设k已经在[1,len-1]范围内，处理同上</span></span><br><span class="line">    <span class="keyword">reverse</span>(<span class="keyword">str</span>.begin(), <span class="keyword">str</span>.begin()+k);</span><br><span class="line">    <span class="keyword">reverse</span>(<span class="keyword">str</span>.begin()+k, <span class="keyword">str</span>.end());</span><br><span class="line">    <span class="keyword">reverse</span>(<span class="keyword">str</span>.begin(), <span class="keyword">str</span>.end());</span><br><span class="line">    cout&lt;&lt;<span class="keyword">str</span>&lt;&lt;endl;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>  具体来看这种算法的理论支持：可以把向量x看作两段子向量的集合即x=ab,其中b[0]=x[k],我们的目的是使x=ba,但b和a的内部不会变化，想象线性代数中我们会怎么做，yes:<br>  <strong>ab -&gt; a^b -&gt; a^b^ -&gt;(a^b^)^=ba，a^表示a的逆向量</strong><br>  尝试下用左右手模拟10元数组向上旋转5个位置的例子，相信你也会感叹它的神奇，虽然它要比上面那种算法稍慢一些，因为他做了中间转换，每个字符不是一次性地移到目标位置，但是这种拆分向量用数学运算简化算法的思想确实值得借鉴。</p>
-<p>  再来看问题三，千万不要想通过排列组合的方式去解决，要知道一个有26个字母的单词就可能有26！种排列方式。考虑一下变位词的定义，它们有共通点：<strong>组成字母集合相同</strong>。也就是说我们只要<strong>为每个单词选择标识和聚集相同标识的单词</strong>就好了。标识可以是按所包含字母顺序排列的单词，比如”pots”,”stop”,”tops”的标识都是 “opst”。</p>
-  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="preprocessor">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">include</span> <span class="string">&lt;fstream&gt;</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">include</span> <span class="string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">include</span> <span class="string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">include</span> <span class="string">&lt;map&gt;</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">include</span> <span class="string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">map</span>&lt;<span class="built_in">string</span>,<span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt; &gt; getWords()&#123;</span><br><span class="line">    <span class="built_in">map</span>&lt;<span class="built_in">string</span>,<span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt; &gt; words;</span><br><span class="line">    <span class="function">ifstream <span class="title">testFile</span><span class="params">(<span class="string">"/Users/smy/wuque/study/ios/pro/demo/data.txt"</span>)</span></span>;</span><br><span class="line">    <span class="built_in">string</span> s;</span><br><span class="line">    <span class="keyword">while</span>(testFile &gt;&gt; s)&#123;</span><br><span class="line">        <span class="built_in">string</span> preStr = s;</span><br><span class="line">        sort(s.begin(),s.end());</span><br><span class="line">        <span class="keyword">if</span>(words.count(s)==<span class="number">0</span>)&#123;</span><br><span class="line">            <span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt; lines;</span><br><span class="line">            lines.push_back(preStr);</span><br><span class="line">            words.insert(pair&lt;<span class="built_in">string</span>, <span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt;&gt;(s,lines));</span><br><span class="line">        &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">            words.find(s)-&gt;second.push_back(preStr);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    testFile.close();</span><br><span class="line">    <span class="keyword">return</span> words;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">lookup</span><span class="params">(<span class="built_in">map</span>&lt;<span class="built_in">string</span>,<span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt; &gt; words,<span class="built_in">string</span> word)</span></span>&#123;</span><br><span class="line">    sort(word.begin(), word.end());</span><br><span class="line">    <span class="keyword">if</span>(words.count(word) == <span class="number">0</span>)&#123;</span><br><span class="line">        <span class="built_in">cout</span>&lt;&lt;<span class="string">"no results"</span>&lt;&lt;endl;</span><br><span class="line">        <span class="keyword">return</span> ;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt; lines = words.find(word)-&gt;second;</span><br><span class="line">    <span class="keyword">for</span>(<span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt;::iterator iter = lines.begin();iter != lines.end();++iter)&#123;</span><br><span class="line">        <span class="built_in">cout</span>&lt;&lt;*iter&lt;&lt;endl;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> * argv[])</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line"><span class="comment">//    intSort();</span></span><br><span class="line">    </span><br><span class="line">    <span class="built_in">map</span>&lt;<span class="built_in">string</span>,<span class="built_in">vector</span>&lt;<span class="built_in">string</span>&gt; &gt; words = getWords();</span><br><span class="line">    <span class="built_in">string</span> word;</span><br><span class="line">    <span class="built_in">cout</span>&lt;&lt;<span class="string">"please input a word to lookup:"</span>;</span><br><span class="line">    <span class="built_in">cin</span>&gt;&gt;word;</span><br><span class="line">    lookup(words, word);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p> 这一章围绕这三个问题，作者在给我们解决问题思路的同时也给我们留下更进一步思考的空间，而其中体现出的一些解决问题的模式很有借鉴意义：</p>
-<ul>
-<li><strong>看起来很困难的问题也可以有一个简单的、意想不到的答案：</strong>有的事情看上去很复杂但经过仔细分析后可能问题一下子就变得很简单了，而即便是真正困难的问题，也不见得解决方法也很复杂，比如汉诺塔问题，很多时候我们缺乏的就是拨开问题迷雾、明确问题模型、把握问题本质的能力，而一旦这些都清楚了，解决方法也就显而易见了</li>
-<li><strong>其实很多解决问题的算法都是由一些基本操作组合而成的：</strong>这些基本操作中很多我们可能都已经烂熟于胸，所以我们要做的一方面是扩展自己的算法基础，也就是多掌握一些基本的算法思想和高级数据结构，另一方面就是面对实际问题时能提取出问题的抽象模型，找到适合的基本操作，再结合问题的特点，对算法进行改进甚至另辟蹊径，以一种巧妙的方式更简单地解决问题</li>
-</ul>
-</li>
-<li><strong><font size="+1">第三章 数据决定程序结构</font></strong><br>  这一章并没有算法的具体内容，作者只是举了几个程序员常犯的错误，给出了避免错误使用数据结构导致的一系列问题的建议，比如使用数组重新编写重复代码、封装复杂结构、尽可能使用高级工具、从数据得出程序的结构等等。<ul>
-<li><strong>恰当的数据视图实际上决定了程序的结构，数据的表示形式是程序设计的根本：</strong>数据结构＋算法＝程序，问题无非就是数据和算法，通过对问题的分析提取出问题模型，并结合合适的数据结构来理清思路，实际编写代码的时候采用语言提供的配套的数据结构实现。数据组织好了，算法清晰了，程序也就自然而然地完成了，而且可以完成的很漂亮，由此可见选对数据结构对解决好问题的重要性</li>
-<li><strong>及时优化代码：</strong>不要觉得代码虽然很乱但是足够满足需求就可以了，如果每次我们都是这么针对新需求添砖加瓦式的扩展程序的话，久而久之，代码会丑的让人难以直视，整个程序结构也会臃肿不堪，后期维护多花费的时间可能远远超过每次修改仔细审视并优化代码的时间，等程序真的大了的时候再说重构可能就不是那么轻松了</li>
-<li><strong>发明家悖论”更一般性的问题也许更容易解决”</strong>：解决问题有的时候是由大化小，一点点的分析抓住问题的核心，而有的时候还需要由点到面的展开，不单去考虑n＝10的情况而是针对n为任意正整数的情况去做处理，这样也许会让思路一下子展开，找到问题的共通点，而且在很多需求变更频繁的业务上，这样的思考方式和编码风格会大大提高程序的通用性和兼容性</li>
-</ul>
-</li>
-<li><p><strong><font size="+1">第四章 编写正确的程序</font></strong><br>  这一章以二分搜索为例演示了算法验证的“三步曲“：初始化、保持和终止</p>
-<ul>
-<li><strong>初始化</strong>：循环初次执行的时候不变式为真</li>
-<li><strong>保持</strong>：如果在某次迭代开始的 时候以及循环体执行的时候，不变式都为真，那么，循环体执行完毕的时候不变式依然为真</li>
-<li><p><strong>终止</strong>：循环能够终止，并且能够得到期望的结果<br>程序编写完成后测试的重要性并不亚于编码本身，由于思维逻辑的漏洞或者程序编写时的手误都有可能造成程序Bug，而测试正是发现Bug的过程，也只有发现了Bug，找到Bug的原因才能彻底解决Bug，保证程序的正确性和健壮性。</p>
-<p>程序员也应该充当测试人员的一部分角色，证明所用算法的正确性（实际中并不用一字一句地去证明），用全面的测试用例验证程序结果，尽早在自己手中发现Bug，虽然实际工作中程序员不需要也没有时间像测试人员一样逐个地去考察程序的各个指标，但一些显而易见的逻辑漏洞和性能问题最好还是在提测之前主动check一下才好。由于实际工作中，提测、测试、提Bug单的流程会浪费一定的时间，而且突然的一个Bug单也会打乱现在工作的节奏，所以这样可以在一定程度上缩短程序开发的总周期，也可以增加别人对自己编程能力的肯定。试想如果你不时就会听到测试人员对某位开发人员说“某某地方程序结果又有些不对啊“，想必这将会大大降低对这位开发者的信任程度。</p>
-</li>
-</ul>
-</li>
-<li><strong><font size="+1">第五章 编程小事</font></strong><br>  这一章主要是就实际编程中遇到的一些问题和调试手段给予读者一些小技巧，虽然小得或许不值一提或许我们都已经了然于胸又或许我们并不清楚这些概念但却在实实在在地使用。<ul>
-<li><strong>使用“脚手架“（scaffolding）：</strong>在我看来，脚手架应该是一个对方面我们测试的工具的形象比喻，为了方便频繁地测试，我们可以先用<strong>伪代码</strong>实现检查没有什么问题再用响应的语言翻译过来，可以编写专门的<strong>测试脚本</strong>或者<strong>GUI</strong>界面，可以在main函数中控制让测试者<strong>手动输入</strong>数据保证程序在测试过程中不用修改，可以使用<strong>断言</strong>在程序运行过程中检测某段逻辑的结果（类似于自动断点，常用在单独的测试文件中，比如unit），可以使用自动化工具只需要输入数据自动去跑测试用例，可以在程序中添加计时代码评定程序性能……这些方法依据问题场景、问题的复杂程度，投入成本与测试成本的比重 而被选择用来测试程序，我们的目的就用尽量少的时间发现尽量多的Bug。</li>
-<li><strong>调试手段：</strong>发现Bug，首先要怀疑，根据Bug结果、错误日志等现有数据去怀疑可能会造成Bug的原因，然后再通过打日志、设断点等手段去验证；而如果确实分析不出怀疑对象可以采用“控制变量“，“二分搜索“等思想尝试去改变程序的某一个变量或者某一段逻辑，比较结果的差异性。 如果问题在某种情况下发生而某种情况下不发生，首先比较两种情况的不同之处，再结合错误提示分析可能原因，上下夹击可以更快地找到Bug原因。找到Bug原因就已经是解决Bug的一大半了，或者更武断一点说 只要找到Bug的原因就肯定可以解决。</li>
-</ul>
-</li>
-</ul>
-<hr>
-<p>以上为本书的<strong>基础篇</strong>,通篇读下来可以看到作者安排章节的顺序和我们日常产品开发的流程是一致的：<br><strong>分析问题-&gt;设计算法-&gt;结合语言选择合适的数据结构编程实现-&gt;测试-&gt;调试</strong><br>保证流程的规范性和每段流程的严谨性必定会大幅度提高程序的质量，减少后期维护的投入成本，在考虑输出／投入比的前提下千万不要理会那些“只要程序正常工作怎么改都行“的催促，在每个阶段都保持程序的美观、可扩展性、健壮性等等都是一名优秀程序员应该具备的素质。</p>
-<hr>
-<h3 id="u6027_u80FD_u7BC7"><a href="#u6027_u80FD_u7BC7" class="headerlink" title="性能篇"></a><strong>性能篇</strong></h3><p>性能的重要性不言而喻，但始终牢记“过早的优化是万恶之源“，When “I feel the need …the need for speed”,then just do it and do well.</p>
-<ul>
-<li><p><strong><font size="+1">第六章 程序性能分析</font></strong><br>   以一个大牛Andrew Appel在解决一个“重力场中多个物体相互作用的n体问题“的实际经验，描述了性能调优的几个方面：算法和数据结构、算法调优、数据结构重组、代码调优、系统软件、硬件等等。</p>
-<ul>
-<li>设计层次的架构优化是最有效的优化：预防远胜于治疗，当性能问题必须要解决时，架构上的优化调整很可能会起到最大程度的效果。实际问题的解决方案都是受到整体架构的制约的，而设计一旦成型，架构上的改动会影响系统的方方面面，稳定性、可靠性、可用性等等，考虑到这戏有时候智能采取层次内或者模块内的优化，可见架构的重要性。有关后台架构问题，有兴趣的请看下我的《《大型网站架构》》笔记，相信一定会有所裨益的。</li>
-<li>“贪心”的优化策略：如果仅需要较小的优化的话，先考虑“性价比“（收益／投入）最大的优化方向，如果需要很大的优化的话尝试上面提到的几个方面的优化，如果它们彼此独立的话，最后优化的结果会是它们的乘积。</li>
-</ul>
-</li>
-<li><p><strong><font size="+1">第七章 粗略估算</font></strong><br>  估算在建筑、机械等工程方面的应用比比皆是，几乎成为了从业者的一项必备技能，但显然这项技能在软件工程领域被很多人忽视了。估算可以做什么？如果你会时间复杂度和空间复杂度的估计就能仅从代码分析出不同算法的优劣，如果你知道你的计算机每秒钟可以执行多少条指令你甚至可以知道程序大概的运行时间，如果你知道一个项目的难度就会知道如何合理分配人力和资源安排项目的进度……</p>
-<ul>
-<li>估算要求对基本参数有一定的了解：机器每秒执行的指令数，对这些基本参数的了解并不需要非常精确，但是数量级不能相差太大，只有在对这些基本参数的了解的基础上才能更准确地在一段程序甚至整个项目中体现估算的最大价值。</li>
-<li>多方面多方法的估算：也许一种估算方式得到的结果并不让人放心，那么多尝试几种方法比较它们结果，如果它们的结果一致的话很可能估算结果和实际值不会相差太大</li>
-<li>常用估算方法：72法则、Little定律、舍九检验、量纲检验</li>
-<li>增加安全系数：如果事先不能对某方面足够熟悉的话，适当增加安全系数补偿估算参数的错误和对问题的了解不足，保证估算的结果要在坏情况下依然可用</li>
-<li>任何事都应足够简单，但不宜过于简单：估算并不是信口开河，结合前面的基本参数、估算方法、多方法的估算结果的比较和安全系数，估算简单，但也不是那么简单^_^</li>
-</ul>
-</li>
-<li><p><strong><font size="+1">第八章 算法设计技术</font></strong><br>  像第二章提到的一样，算法上的灵机一动也许就会让程序更加高效，算法设计是一门技术，也是一门艺术，我们把想法落实在代码，然后从空间、时间、简洁性等等去分析程序，一点点地去调整去优化，直到达到我们满意的效果。</p>
-<blockquote>
-<p>问题：计算n元整数向量中连续子向量的最大和，比如[3,-2,3,-1]的最大连续子向量的和4，对应向量为[3,-2,3].</p>
-</blockquote>
-<p> 解法一:一个一个地求每个子向量的和，记录最大值</p>
-  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">maxSum</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; nums)</span></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> len = nums.size();<span class="comment">//假定len&gt;1</span></span><br><span class="line">    <span class="keyword">int</span> maxSum = nums[<span class="number">0</span>];</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;len;++i)&#123;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> j=i+<span class="number">1</span>;j&lt;len;++j)&#123;</span><br><span class="line">            <span class="keyword">int</span> tempSum = <span class="number">0</span>;</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> k=i;k&lt;=j;++k)&#123;</span><br><span class="line">                tempSum += nums[k];</span><br><span class="line">            &#125;</span><br><span class="line">            maxSum = max(maxSum,tempSum);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> maxSum;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>  这应该是最粗鲁最挫的一种方式了，O(n<sup>3</sup>)的时间复杂度，而其中求和的n次内循环其实是可以避免的</p>
-<p>  解法二:在以[i]开头的向量中依次增加后面的元素值</p>
-  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">maxSum</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; nums)</span></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> len = nums.size();<span class="comment">//假定len&gt;1</span></span><br><span class="line">    <span class="keyword">int</span> maxSum = nums[<span class="number">0</span>];</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;len;++i)&#123;</span><br><span class="line">        <span class="keyword">int</span> tempSum = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> j=i+<span class="number">1</span>;j&lt;len;++j)&#123;</span><br><span class="line">            tempSum += nums[j];</span><br><span class="line">            maxSum = max(maxSum,tempSum);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> maxSum;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>  解法三：还是消除求和的内循环，不过是通过向量和之差计算</p>
-  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">maxSum</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; nums)</span></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> len = nums.size();<span class="comment">//假定len&gt;1</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">int</span> tempSumArray[len＋<span class="number">1</span>] = &#123;<span class="number">0</span>&#125;;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;len;++i)&#123;</span><br><span class="line">	    tempSumArray[i＋<span class="number">1</span>] = tempSumArray[i-<span class="number">1</span>] + nums[i];</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">int</span> *tempArray = tempSumArray + <span class="number">1</span>;</span><br><span class="line">	</span><br><span class="line">    <span class="keyword">int</span> maxSum = nums[<span class="number">0</span>];</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;len;++i)&#123;</span><br><span class="line">        <span class="keyword">int</span> tempSum = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> j=i;j&lt;len;++j)&#123;</span><br><span class="line">            tempSum = tempArray[j] - tempArray[i-<span class="number">1</span>];</span><br><span class="line">            maxSum = max(maxSum,tempSum);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> maxSum;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>  解法二和解法三都达到了将时间复杂度缩减为O(n<sup>2</sup>)的效果，解法二稍微好一点，解法三还引入了额外的O(n)空间。不过上面这三种算法都是对所有的子向量求和取最大值，而实际上通过遍历整个向量可以筛选掉一些不可能作为目标向量的向量，即求所有以每个元素作为目标向量的元素的向量的和的最大值，yes，动态规划的思想</p>
-  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">maxSum4</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; nums)</span></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> len = nums.size();<span class="comment">//假定len&gt;1</span></span><br><span class="line">    <span class="keyword">int</span> maxSum = nums[<span class="number">0</span>];</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">int</span>* sumArray = <span class="keyword">new</span> <span class="keyword">int</span>[len]&#123;<span class="number">0</span>&#125;;</span><br><span class="line">    sumArray[<span class="number">0</span>] = nums[<span class="number">0</span>];</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">1</span>;i&lt;len;++i)&#123;</span><br><span class="line">        <span class="keyword">int</span> sum1 = sumArray[i-<span class="number">1</span>] + nums[i];</span><br><span class="line">        <span class="keyword">int</span> sum2 = nums[i];</span><br><span class="line">        sumArray[i] = max(sum1,sum2);</span><br><span class="line">        </span><br><span class="line">        maxSum = max(maxSum,sumArray[i]);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> maxSum;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>  算法四的时间复杂度为O(n),从数量级来看应该是最低了，美中不足的是它还引入了额外的O(n)的空间，如何在时间和空间折中就要根据实际条件而论了。</p>
-<ul>
-<li><strong>算法设计技巧</strong>：保存状态避免重复计算，信息预处理，分治，扫描，累加数组，下界，动态规划思想等等，这里可能只举出了对于上面那个例子来说体现的技巧，而在算法设计中还有数不胜数的更多的技巧和思想</li>
-<li><strong>找到瓶颈逐步突破</strong>：程序优化的关键在于找到优化点，只有知道了可以在哪里优化在哪里优化会有最好的效果接下来的优化才有意义也才有成效</li>
-</ul>
-</li>
-<li><p><strong><font size="+1">第九章 代码调优</font></strong><br>  这一章作者以一个实际的图形分析程序的调优和整数取模、函数宏和内联代码、顺序搜索、二分搜索的搜索问题展示了调优的一些技巧，这些问题实现起来都比较容易，简要记录一下调优的过程。</p>
-<blockquote>
-<ol>
-<li>整数取模问题：％运算的开销比一般的加减运算要高1个数量级的时间，所以在不会让代码十分复杂而又需要性能调优的话可以尝试用等价的代数表达式替换模运算：<br><code>k=(i+j)%len</code>可以转换为<code>k=i+j;while(k&gt;=n){k-=n;}</code><br>优化效果取决于j的值，当j＝1时，算法是顺序访问内存的，根绝缓存的预见性，可以提前取出下个要操作的值，运算时间主要在模运算上，而当j过大时，每次从数组中拿值时内存都要重新加载到高速缓存中，时间大多消耗在这里，模运算的消耗相比就小很多了。因此实际优化的时候还要考虑对应的参数和机器类型、配置。</li>
-<li>函数、宏和内联代码：一般来就运算时间来说函数&gt;內联代码&gt;宏</li>
-<li>顺序搜索：添加哨兵元素合并测试条件和展开循环获得CPU多通道加速</li>
-<li>二分搜索：通过添加哨兵元素、改变不变式为<br>x[l]&lt;t&lt;=x[u],合并了测试条件，减少了比较次数；等价的代数表达式将上下限的表示方法转换成了下限与增量的表示法</li>
-</ol>
-</blockquote>
-<ul>
-<li><strong>过早的优化是万恶之源</strong>：效率和可用性、稳定性等其他性质一样重要，不过在具体的情景下可能对某方面有所侧重，而在程序的初开发阶段一定是以保障可用性为前提的，明确认识效率的角色才能在在各种指标前做出正确的抉择</li>
-<li><strong>性能度量</strong>：性能的好坏在不同问题上应该有明确的指标，判断性能好坏也应该有响应的性能监控工具来实时地监控程序的性能，一旦到达某个低点时自动报警</li>
-<li><strong>没有坏的话就不要修</strong>：只有真正意识到程序的性能真的成为问题时才去将性能优化作为专门的课题去解决，这并不意味着在一开始编写代码时可以完全不考虑代码的性能，只是说此时不必过度关注程序性能，在不影响开发效率的情况下优秀程序员自然会通过自己的经验和对问题的理解写出优秀的代码，只要性能不要过分低或者有很明显又很容易改进的优化点，可以暂时不优化  </li>
-</ul>
-</li>
-<li><p><strong><font size="+1">第十章 节省空间</font></strong><br>  上一章的优化主要是对时间优化而言的，这一章重点在于优化空间使用。</p>
-<blockquote>
-<p>假设一个200x200的地图中有2000个点存在住户i，1&lt;=i&lt;=2000,如何存储这2000个住户的位置？</p>
-</blockquote>
-<p>  方案1:最直接的就是用一个二维数组，所有住户在的位置置，其他置0，这样需要200x200x4＝160000B＝156.25KB</p>
-<p>  方案1明显浪费了很多无用的空间存储根本就不需要的值，对于这类稀疏数据的存储，可以用专门的洗漱数据结构存储</p>
-<p>  方案2:类似散列的存储方式，可以把x坐标作为散列值，对应一个包括y坐标和编号的列表：<br>  0-&gt;2,17-&gt;3,14<br>  1-&gt;3,12<br>  …<br>  2000<br>  这样就只存储了需要的信息＋多余的指针，空间大概为2000*12+800=24800B=24KB,不过这种存储方式在查找某位置的元素值时确实要比方案一直接用数组表示慢一些，因为每次查找的时候都要对x链接的列表逐个查找</p>
-<ul>
-<li>节省空间的好处：空间的紧凑往往意味着数据结构的合理，意味着数据的冗余度减少，这样会使程序变得更加简单，也会在运行时间上得到想要的作用，而且小程序也会更快地被内存加载，更容易加入到高速缓存中</li>
-<li>简单性可以衍生出功能性、健壮性以及速度和空间</li>
-<li>常用的数据空间技术：不存储重新计算、稀疏数据结构、数据压缩、不同的分配策略、垃圾回收等等常用的技术都可以用于空间节省上，但首先还是要明确问题对时间和空间的要求，因为上面几种方式在某些情况下虽然节省了空间但却是以牺牲运行速度为代价的</li>
-<li>节省空间原理：先要搞清空间开销的概念和实际问题真正的空间开销，发掘空间的“热点”、熟悉空间的度量、正确处理空间与时间的折中、与运行环境的协作、使用适合任务的正确工具，都是节省空间的出发角度</li>
-</ul>
-</li>
-</ul>
-<hr>
-<p>以上是性能篇的大概内容，性能的重要性不言而喻，即使随着硬件技术的发展硬件变得越来也便宜，作为程序员也应该保持对性能的追求，追求用户的极致体验。对性能的预估、测试、监控、优化应该是优秀程序员必备的技能，在大型团队中，在保证项目可用性和开发效率的情况下，可能还会设立单独的性能调优小组专门负责性能的测试和优化。</p>
-<hr>
-<h3 id="u5E94_u7528_u7BC7"><a href="#u5E94_u7528_u7BC7" class="headerlink" title="应用篇"></a><strong>应用篇</strong></h3><p>这一部分是建立在第一部分和第二部分的基础上，讲解了几个比较常用的算法，由于这些算法比较普遍，在一般的辅导书上也都有所讲解，这里不再按每一章的内容依次记录，只是把主要的内容和需要注意的地方总结一下。</p>
-<ul>
-<li>应用：几种常见排序,插排、快排（有几种不同方式），利用随机数取样，不同数据结构下的搜索，堆数据结构的实现、堆排序和优先级队列的堆实现，关于字符串的一些问题，如单词查找统计、字串匹配、随机文本生成，这些问题的解决方案很多都用到了前面两部分所介绍的方法和思想，可以说是前面两部分的一个实际应用测试</li>
-<li>排序问题：几种不同排序方式会在时间复杂度和空间复杂度有差异，在平均情况、最坏情况和最好情况（一般不考虑）也会有所差异，因此在选择排序方式时要依据问题的要求选择恰当的排序方式，很多情况可以直接用封装好的库函数解决，但要清楚库函数的实现效率虽然高但是因为对上的封装和适配，会降低执行效率，如果发现在这方面确实可以有足够大的优化要自己手动编写特定的排序方式，比如我们第一章说的位向量排序</li>
-<li>编程过程中的几个步骤：在第一部分的总结里也已经提到程序解决的步骤，这里再细化一下<ol>
-<li><strong>正确分析理解面临的问题</strong></li>
-<li><strong>抽象问题，尽可能用数学语言表示</strong></li>
-<li><strong>考虑尽可能多的解法</strong>，一开始想出来的方法不一定就是最合适的方法，观念的壁垒、思维的束缚甚至是之前类似问题的解决经验都有可能造成不合适的第一想法，动手之前多想一想，动手的时候才会更快，动完手后印象才能更深刻</li>
-<li><strong>回顾</strong>,”改进的余地总是存在的”,这就要求我们自己主动去check可能出现的bug，去优化程序的性能，去总结得到的经验 </li>
-</ol>
-</li>
-<li>小技巧：<ul>
-<li>使用哨兵简化代码</li>
-<li>迭代替换递归提高运行速度</li>
-<li>由于内存的预加载机制、数据的连续性和大小插入元素等操作数组不一定会比链表慢</li>
-<li>分配空间时可以一次性分配所需空间提高空间利用率和空间的连续性以便加载到内存的时候更快</li>
-<li>过程的抽象,每个数据结构都要从它的两方面去看，外部是规范，说明了它能做什么；内部是实现，说明了是怎么做的,在编写一个大函数时可以假定其中的一个独立的函数已经实现仅考虑它的功能搭好整个函数的算法框架，然后用同样的方法去细化每个内部函数的实现，这样会让思路更清晰，代码的易读性也会更好</li>
-</ul>
-</li>
-</ul>
-<hr>
-<p>以上只是在读书的时候做的一些笔记和总结，现在对这本书还远远没有吃透，计划先去补充一些算法知识，然后回过头来再过一遍这本书，弄懂每一道习题，学到真正的“<strong>编程珠玑</strong>”</p>
-
+        <p>这不是一本具体算法的讲解或者代码编写的教程，但是从书中的字里行间，我们可以学到的是更多的<strong>软知识</strong>:<strong>对编程新的认识、更加发散的思维方式、更严格的代码要求、堪比瑞士军刀的小技巧</strong>…… 编程也许入门并不难，但是要想真正成为一名优秀的软件工程师，还是需要很多锤炼。<strong>内外兼修，方成大器。</strong><br>
       
     </div>
     
@@ -403,6 +177,10 @@
 	</div>
 
 
+      
+        <p class="article-more-link">
+          <a  href="/2016/01/01/编程珠玑/#more">more >></a>
+        </p>
       
       <div class="clearfix"></div>
     </div>
@@ -446,49 +224,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>搭建这个个人博客的时间刚好是2015年的最后一天，回首这一年发生的点点滴滴，确实值得自己用文字记述下来，对今年的回顾、对明年的展望，所有的经历，快乐的或是痛苦的，都是为了梦想而付出的努力，2016，相信自己会更好！</p>
-<ul>
-<li><p><strong><font size="+1">今天的2015</font></strong></p>
-<p>  2015对我来说真正是不平凡的一年，这一年里，我为找到满意的实习而苦苦奋斗过，我为能到理想的学校读研究生不怕麻烦地准备过，我为在公司做出傲人的成绩加班过，我为自己的不足改正过……这一年我真正体会到目标的力量，朝着它我可以不顾身上的伤还是一直往前跑，天道酬勤，这一年我付出了很多，也收获了很多：我去了阿里和腾讯实习，学到了很多在学校学不到的知识；我拿到了清华的研究生保送资格，让我可以在未来的两年里继续充实自己；我去了杭州、深圳、北京这些小时候梦想去的地方，见了很多人，遇见很多事，这种种的经历给我20岁的年纪留下了美好的回忆，即便在青春年华里，我希望自己也可以磨练出一颗成熟的心。</p>
-<ul>
-<li><p><strong>准备实习面试</strong></p>
-<p>  2015的上半年我还是大三下的学生，学期结束就要找公司去实习了，我知道该要准备实习了。一开始并没有确定要去哪家公司，只是想先复习好学过的内容，面试都过不去还谈去哪简直成了笑话。通过向学长们的请教，大概了解了面试的一般流程，于是我制定了详细的复习计划，哪段时间复习什么，重点在哪。面试无外乎是课内的基础知识，数据结构、计算机网络、数据库……首先我大致浏览了一遍自己的强项科目的知识，然后重点复习不太了解的知识点，后来刷了一些算法题，在网上搜到一些面试题尝试着去解决，想想如果问到自己的话应该如何回答，最后整理一下之前做过的项目，这样一遍下来心里就有了底。后来通过内推，面试了阿里巴巴天猫事业部和腾讯MIG，成功拿到了两家的实习offer，可以说这是2015年的第一个大收获，也让我对自己有了信心。</p>
-</li>
-<li><p><strong>准备保研</strong></p>
-<p>  可能很多人都跟我一样，从一入学开始就想着要读研，但并不清楚到底为什么读研。每个人都有自己的考虑，读研也好直接工作也好，每个人都要为自己的选择负责。既然选择了读研，就去自己理想的学校去读。保研的准备其实和实习准备是有重叠的，因为正好在一个时间段准备内容也都一样，所以保研最繁琐的就是要准备一堆材料找老师去开推荐信什么的，一共寄出了四份材料，也都拿到了去面试的机会，最终种种因素选择了清华的软件学院。但是在清华的面试成绩比较低，这一点比较遗憾，如果自己当初可以再努力一点，专心一点，也许能够拿到更好的成绩。</p>
-</li>
-<li><p><strong>实习</strong></p>
-<p>  其实实习要比真正的保研面试要早一些，拿到offer以后打死也不想在学校待了，看着周围的同学已经有去实习的了自己也憋不住想早点去了。于是在考完驾照以后，我就去了杭州。第一次一个人来到一个陌生的城市，心里多少有点不踏实，幸好已经有几个同学早来了半个月租好了房子，我也就不用操多余的心了。6月4号正式入职，我成了一名“上班族”。在阿里我遇见了很多nice的师兄，他们牛x的技术、做事的风格、考虑问题的方式、为人处事的态度都让我受益匪浅。这三个月的时间里我感觉自己真的不再是个象牙塔里的大学生了，我走入了社会，不再是个被保护的少年，我要用自己的能力证明自己，我把交待给我的每一个任务都完成得让自己满意，抓住机会向师兄们请教，这三个月让我真的学会了很多很多，后来在腾讯的实习我也能把学到的一些东西运用上去，做好自己的工作，收获更多的感悟。</p>
-<p>  这两段实习对我来说真的对我意义非凡。抛开技术不说，它让我知道了作为下属如何让上级看重自己，作为同事如何让他们佩服自己，作为leader如何让别人敬重自己，更更重要的它让我知道了中国社会确确实实是个人情社会，懂的自然就懂了…… 现在的我离想象的还有很大一段距离，但我希望在接下来的时间里我可以一步步地赶上。</p>
-<p>“世界这么大，我想去看看”，我需要的不是一场说走就走的旅行，更多的是一次人性和心灵的修行。年轻的时候吃点苦没啥，多经历一些生活才不会太空虚。</p>
-<p>过去的就过去了，在即将过去的2015里，得到的也好，失去的也好，开心的也好，难过的也好，一切的一切都是下一年进步的理由。</p>
-<p><strong><font size="+1" color="#00aaff">2015，Bye！</font></strong></p>
-</li>
-</ul>
-</li>
-<li><p><strong><font size="+1">明天的2016</font></strong></p>
-<p>  2016，又将是崭新的开始，带着2015的喜悦和遗憾，我希望自己能变得一点点接近让自己满意的人。</p>
-<ul>
-<li>建设好这份个人博客，它记录的不只是技术，而是点点滴滴的生活</li>
-<li>发表一篇高质量专业论文</li>
-<li>读至少15本专业书籍和20本文学作品(详细书单陆续补充……)</li>
-<li>熟悉并发编程调优并应用于Java，python</li>
-<li>跟进android知识点更新</li>
-<li>学习go语言比并尝试用于后台和android</li>
-<li>深入了解后台架构</li>
-<li>掌握unix编程，尤其网络编程</li>
-<li>算法，刷完leetcode，跟进微软，谷歌面试题</li>
-<li>要写出一个框架或工具在Github上 100+ Star</li>
-<li>csdn上要拿到“博客专家”称号</li>
-<li>SOF上要拿到10000 reputations</li>
-<li>一款上架App</li>
-<li><p>坚持锻炼，长10斤肉（这个好像有点难）</p>
-<p><strong><font size="+2" color="#22ffaa">2016，I’m coming!</font></strong></p>
-</li>
-</ul>
-</li>
-</ul>
-
+        <p>搭建这个个人博客的时间刚好是2015年的最后一天，回首这一年发生的点点滴滴，确实值得自己用文字记述下来，对今年的回顾、对明年的展望，所有的经历，快乐的或是痛苦的，都是为了梦想而付出的努力，2016，相信自己会更好！<br>
       
     </div>
     
@@ -497,6 +233,10 @@
       
       
 
+      
+        <p class="article-more-link">
+          <a  href="/2015/12/31/今天的2015，明天的2016/#more">more >></a>
+        </p>
       
       <div class="clearfix"></div>
     </div>
