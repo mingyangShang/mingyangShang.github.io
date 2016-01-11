@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" >
+  <title>并发编程之同步互斥篇 | starkshang</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="在并发编程之基础问答篇中我对并发编程的概念、优势、应用场景、注意事项等做了整体上的大概介绍，文章最后提出了我从实际编程的角度对并发编程的理解：多线程的并发执行，线程间的通信和线程间对共享状态的同步与互斥。虽然说多线程并发执行是另外两方面的基础，但线程间对共享状态的同步互斥是并发编程的正确性保障，也会在另外两方面的讲解和例子中大量用到，再者鉴于本系列博客的期望读者是已经掌握并发编程最最基本使用的开发">
+<meta property="og:type" content="article">
+<meta property="og:title" content="并发编程之同步互斥篇">
+<meta property="og:url" content="http://yoursite.com/2016/01/10/并发编程之同步互斥篇/index.html">
+<meta property="og:site_name" content="starkshang">
+<meta property="og:description" content="在并发编程之基础问答篇中我对并发编程的概念、优势、应用场景、注意事项等做了整体上的大概介绍，文章最后提出了我从实际编程的角度对并发编程的理解：多线程的并发执行，线程间的通信和线程间对共享状态的同步与互斥。虽然说多线程并发执行是另外两方面的基础，但线程间对共享状态的同步互斥是并发编程的正确性保障，也会在另外两方面的讲解和例子中大量用到，再者鉴于本系列博客的期望读者是已经掌握并发编程最最基本使用的开发">
+<meta property="og:image" content="http://7xpoty.com1.z0.glb.clouddn.com/QQ20160110-1@2x.png">
+<meta property="og:updated_time" content="2016-01-11T13:22:50.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="并发编程之同步互斥篇">
+<meta name="twitter:description" content="在并发编程之基础问答篇中我对并发编程的概念、优势、应用场景、注意事项等做了整体上的大概介绍，文章最后提出了我从实际编程的角度对并发编程的理解：多线程的并发执行，线程间的通信和线程间对共享状态的同步与互斥。虽然说多线程并发执行是另外两方面的基础，但线程间对共享状态的同步互斥是并发编程的正确性保障，也会在另外两方面的讲解和例子中大量用到，再者鉴于本系列博客的期望读者是已经掌握并发编程最最基本使用的开发">
+  
+    <link rel="alternative" href="/atom.xml" title="starkshang" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img lazy-src="http://7xpoty.com1.z0.glb.clouddn.com/%E5%AF%86%E7%8D%BE.jpg" class="js-avatar">
+			
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/">starkshang</a></h1>
+		</hgroup>
+
+		
+		<p class="header-subtitle">Since you want to do,why not now?</p>
+		
+
+		
+			<div class="switch-btn">
+				<div class="icon">
+					<div class="icon-ctn">
+						<div class="icon-wrap icon-house" data-idx="0">
+							<div class="birdhouse"></div>
+							<div class="birdhouse_holes"></div>
+						</div>
+						<div class="icon-wrap icon-ribbon hide" data-idx="1">
+							<div class="ribbon"></div>
+						</div>
+						
+						
+						<div class="icon-wrap icon-me hide" data-idx="3">
+							<div class="user"></div>
+							<div class="shoulder"></div>
+						</div>
+						
+					</div>
+					
+				</div>
+				<div class="tips-box hide">
+					<div class="tips-arrow"></div>
+					<ul class="tips-inner">
+						<li>菜单</li>
+						<li>标签</li>
+						
+						
+						<li>关于我</li>
+						
+					</ul>
+				</div>
+			</div>
+		
+
+		<div class="switch-area">
+			<div class="switch-wrap">
+				<section class="switch-part switch-part1">
+					<nav class="header-menu">
+						<ul>
+						
+							<li><a href="/">主页</a></li>
+				        
+							<li><a href="/archives">所有文章</a></li>
+				        
+						</ul>
+					</nav>
+					<nav class="header-nav">
+						<div class="social">
+							
+								<a class="github" target="_blank" href="https://github.com/mingyangShang" title="github">github</a>
+					        
+								<a class="zhihu" target="_blank" href="https://www.zhihu.com/people/shang-ming-yang-54" title="zhihu">zhihu</a>
+					        
+								<a class="facebook" target="_blank" href="https://www.facebook.com/profile.php?id=100010973622690" title="facebook">facebook</a>
+					        
+								<a class="google" target="_blank" href="/shangmingyanggo@gmail.com" title="google">google</a>
+					        
+						</div>
+					</nav>
+				</section>
+				
+				
+				<section class="switch-part switch-part2">
+					<div class="widget tagcloud" id="js-tagcloud">
+						<a href="/tags/java/" style="font-size: 10px;">java</a> <a href="/tags/并发编程/" style="font-size: 10px;">并发编程</a> <a href="/tags/读书笔记/" style="font-size: 20px;">读书笔记</a> <a href="/tags/随笔/" style="font-size: 10px;">随笔</a>
+					</div>
+				</section>
+				
+				
+				
+
+				
+				
+				<section class="switch-part switch-part3">
+				
+					<div id="js-aboutme">大连理工大学本科毕业，曾为阿里巴巴天猫无线实习生、腾讯MIG职实习生。熟悉android 开发，爱读书、爱打台球、爱技术，崇尚简洁的美。干自己该干的事，做自己想做的人。</div>
+				</section>
+				
+			</div>
+		</div>
+	</header>				
+</div>
+
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"></div>
+  		<h1 class="header-author js-mobile-header hide">starkshang</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+			
+				<img lazy-src="http://7xpoty.com1.z0.glb.clouddn.com/%E5%AF%86%E7%8D%BE.jpg" class="js-avatar">
+			
+			</div>
+			<hgroup>
+			  <h1 class="header-author">starkshang</h1>
+			</hgroup>
+			
+			<p class="header-subtitle">Since you want to do,why not now?</p>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/">主页</a></li>
+		        
+					<li><a href="/archives">所有文章</a></li>
+		        
+		        <div class="clearfix"></div>
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+						<a class="github" target="_blank" href="https://github.com/mingyangShang" title="github">github</a>
+			        
+						<a class="zhihu" target="_blank" href="https://www.zhihu.com/people/shang-ming-yang-54" title="zhihu">zhihu</a>
+			        
+						<a class="facebook" target="_blank" href="https://www.facebook.com/profile.php?id=100010973622690" title="facebook">facebook</a>
+			        
+						<a class="google" target="_blank" href="/shangmingyanggo@gmail.com" title="google">google</a>
+			        
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+
+      <div class="body-wrap"><article id="post-并发编程之同步互斥篇" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/01/10/并发编程之同步互斥篇/" class="article-date">
+  	<time datetime="2016-01-10T04:00:00.000Z" itemprop="datePublished">2016-01-10</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      并发编程之同步互斥篇
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/并发编程/">并发编程</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/读书笔记/">读书笔记</a></li></ul>
+	</div>
+
+        
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>在<a href="https://mingyangshang.github.io/2016/01/09/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/" target="_blank" rel="external">并发编程之基础问答篇</a>中我对并发编程的概念、优势、应用场景、注意事项等做了整体上的大概介绍，文章最后提出了我从实际编程的角度对并发编程的理解：多线程的并发执行，线程间的通信和线程间对共享状态的同步与互斥。虽然说多线程并发执行是另外两方面的基础，但线程间对共享状态的同步互斥是并发编程的正确性保障，也会在另外两方面的讲解和例子中大量用到，再者鉴于本系列博客的期望读者是已经掌握并发编程最最基本使用的开发者（知道Runnable，Thread创建线程就好），因此在这三方面中我将首先介绍第三点：线程间对共享可变状态的同步与互斥。<br><a id="more"></a></p>
+<p>线程安全性是以正确性为核心的，要编写线程安全的代码的核心就在于要对状态访问操作进行正确的管理，这里的状态就是指线程间共享且可变的状态，对这些状态的管理主要就是确保状态的正确同步与互斥。<br>首先先熟悉一下相关的基本概念：</p>
+<ul>
+<li>共享状态：这里所说的状态就是指变量的值，共享表示这个值可能会被多个线程同时访问（包括读取和修改），这里的状态不只包括自身，还可能会包括其他以来对象的域。比如某个对象拥有一个<code>List&lt;Map&lt;String,Person&gt;&gt;</code>类型的对象，那么这个对象的状态不仅包括这个集合值，还包括他的每一个元素即<code>Map</code>的状态，而每个<code>Map</code>的状态还包括每个元素的<code>Map.Entry&lt;String,Person&gt;</code>状态，这其中自然还包括了这个对象内部拥有的所有状态</li>
+<li>同步：同步的目的是确保共享状态的在线程间的可见性，即当一个线程改变共享状态后下一个访问该共享状态的线程能拿到最新的正确值，而不是之前已经过期的值</li>
+<li>互斥：保证共享状态在某一特定时刻内只能由一个线程访问</li>
+</ul>
+<p>而在Java中实际上同步和互斥并不能严格区分开来讲，它们是相辅相成的，阅读完下面的内容相信你一定能理解我为什么这么说了。</p>
+<p>首先看一个例子，假如我们要统计Servlet中某个函数的调用频率，即要对这个方法的调用计数，不考虑多线程的话我们可以这么写：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">public <span class="class"><span class="keyword">class</span> <span class="title">UserInfoServlet</span> <span class="keyword"><span class="keyword">extends</span></span> <span class="title">Servlet</span>&#123;</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> int mRegisterCount = <span class="number">0</span>; <span class="comment">//注册函数调用计数</span></span><br><span class="line">    </span><br><span class="line">    public void register(<span class="type">Bundle</span> savedInstanceState) &#123;</span><br><span class="line">        <span class="comment">//注册具体操作</span></span><br><span class="line">        ++mRegisterCount;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    public int getRegisterCount()&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>.mRegisterCount;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果是单线程执行即访问这段代码在任意时刻最多只有一个调用者时，上述代码并不会有什么问题，因为单线程执行的话就是按照重排序的指令按序执行的，而一旦有多个调用者同时调用<code>register</code>函数就会出现问题结果序列可能会出现重复和回退的情况：1,2,2,3…为什么会出现这种情况呢，我们先由指令的执行序列分析一下。<br>首先要明确<code>++mRegisterCount</code>其中包含了三个基本操作：取值、计算、写入，当只有一个调用者执行时，操作序列就是按序执行的而且取值的寄存器和写入值的寄存器是相同的，而一旦多线程同时执行时，进程中就有多个同样顺序的操作序列执行：<br><img src="http://7xpoty.com1.z0.glb.clouddn.com/QQ20160110-1@2x.png" alt=""></p>
+<p>这只是程序执行时可能出现的一种情况，一旦类似情况出现的话程序的结果很可能就是错误的，这个例子的错误原因就在于<code>++mRegisterCount</code>并不是单个操作，它是一组操作的复合，当多个线程同时执行这组操作的时候某个时刻每个线程都可能在任一个阶段，不同的执行时序使得最后的结果不尽相同，最后可能由于几个线程都用相同的值＋1使最终结果远远小于实际结果。这种由于不恰当的时序关系而出现不正确结果的情况叫做“<strong>竞态条件</strong>”，这就涉及到了互斥的一个核心概念：原子性。</p>
+<ul>
+<li><p>原子性</p>
+<p>  原子性是指一组操作在外界看来是作为一个整体执行的，即要么全部执行，要么一条指令也不执行，这和数据库的原子性的定义是一致的，原子性保证了组合操作可以作为一个整体执行，在这段代码执行期间，其他访问它所持有共享状态的线程都需要等待。在上面的例子中如果能保证每个线程执行<code>++mRegisterCount</code>时不被其他线程干扰，并且本线程更新完的值能够被下一执行线程感知，就能得到正确的结果，这就需要 对共享状态的互斥和同步。</p>
+</li>
+<li><p>加锁机制</p>
+<p>  原子性如何保证呢，最常用的做法是加锁机制。加锁可以认为是先把共享状态锁定，只有持有该共享状态外部锁对应钥匙的线程才能执行这段被锁起来的代码，访问加锁的状态，而其他没有拿到钥匙的线程如果想要访问该被锁定的状态时要等待正在持有钥匙的线程退出后把钥匙还回去才可能获得钥匙执行锁住的代码。<br>加锁在Java中对应<code>synchronized</code>关键字，它对某个状态加锁，并指定在某段代码区域内才对此状态加锁，这段代码就是该共享状态对应的一个临界区，也叫做共享代码块，它包括两部分，一个是作为锁的对象引用，一个是由这个锁保护的代码块，以上述统计调用次数的多线程版本为例，我们使用加锁机制来实现线程安全的操作：</p>
+</li>
+</ul>
+<pre><code><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span> <span class="keyword">extends</span> <span class="title">Servlet</span></span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> mRegisterCount = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">register</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//注册具体操作</span></span><br><span class="line">        <span class="keyword">synchronized</span> (<span class="keyword">this</span>) &#123; <span class="comment">//使用对象内置锁,锁定整个对象的状态</span></span><br><span class="line">            ++mRegisterCount;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">int</span> <span class="title">getRegisterCount</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>.mRegisterCount;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</code></pre><p>这里我使用的是状态所属对象的锁，其实每个Java对象都可以作为一个实现同步的锁，这些锁被称为“内置锁”或者“监视器锁”，线程在进入同步代码块之前会自动获得锁，并且在退出同步代码块时自动释放锁。而无论是通过正常的控制路径退出，还是通过从代码块中抛出异常退出，获得内置锁的唯一途径就是进入由这个锁保护的同步代码块或方法。Java中的内置锁相当于是一种互斥锁，即最多只有一个线程能持有这种锁，当线程A尝试获取一个由线程B持有的锁时，线程A必须等待或者阻塞，知道线程B释放这个锁，如果B永远不释放锁，那么A也将永远等下去。这也是锁在实际使用时很容易犯的一个错误。由于任意时刻只能有一个线程执行内置锁保护的代码块，那么由这个锁保护的同步代码块自然就会以原子方式执行，多线程在执行该代码块时也不会被相互干扰。<br>通过上述对<code>Test</code>对象加锁，实现了 读取<code>mRegisterCount</code>值 －&gt; 对<code>mRegisterCount</code>＋1 -&gt; 将＋1后的值写入<code>mRegisterCount</code> 之一复合操作的原子性从而保证了最后结果的正确执行。</p>
+<ul>
+<li><font size="+1">内置锁的可重入性</font>
+
+<p>  Java的内置锁还有一个特性：可重入性。即如果一个线程试图获取一个已经由它持有的锁时这个请求会成功。这也反映出了Java中获取锁的粒度是线程，而不是调用。</p>
+  <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span> <span class="keyword">extends</span> <span class="title">Servlet</span></span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> mRegisterCount = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">register</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//注册具体操作</span></span><br><span class="line">        <span class="keyword">synchronized</span> (<span class="keyword">this</span>) &#123; <span class="comment">//使用对象内置锁,锁定整个对象的状态</span></span><br><span class="line">            ++mRegisterCount;</span><br><span class="line">            System.out.println(<span class="string">"count="</span>+getResisterCount()); <span class="comment">//测试可重入性</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">int</span> <span class="title">getRegisterCount</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>.mRegisterCount;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>在上面的代码中我们增加了一行通过另一同步方法来读取共享状态<code>mRegisterCount</code>,如果说内置锁不是可重入的，那在<code>register</code>中就会发生持续阻塞，因为既然线程如果能进入<code>register</code>的同步代码块，就说明它已经拿到了内置锁，而<code>getRegisterCount</code>也要取得相同的内置锁，它就要等待<code>register</code>方法执行完释放锁，但是由于<code>getRegisterCount</code>方法还在一直等待获得锁，造成<code>register</code>方法不会执行完，由此整个线程就阻塞在这里。而实际上经过我们的测试其实程序是可以正常执行的，这就证明了上面的结论。</p>
+<ul>
+<li><font size="+1">内存可见性</font>
+
+<p>  <code>synchronized</code>并不只是保证了组合操作的原子性，试想即便线程间不能同时访问同步代码块，但上一线程执行完的结果不能被下一线程感知，即下一线程不能读取到最新的状态时，结果还是不正确的，这就涉及到了共享状态的内存可见性问题。<br>内存可见性是一种比较复杂的属性，而且它很多时候不容易被直观观察出来。我们所说的共享状态的同步与互斥不仅要防止一个线程在读取状态而另一个线程在修改状态，还要确保线程修改了状态之后其他线程能够看到状态的变化。<br>假设我们希望能够让一个线程一直执行直到某个状态发生变化，可以在线程内部加一个状态变量来控制线程的终止：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">public <span class="class"><span class="keyword">class</span> <span class="title">NoVisiableThread</span> <span class="keyword"><span class="keyword">extends</span></span> <span class="title">Thread</span>&#123;</span></span><br><span class="line">    <span class="keyword">private</span> boolean canRun = <span class="literal">true</span>;</span><br><span class="line">    <span class="annotation">@Override</span></span><br><span class="line">    public void run()&#123;</span><br><span class="line">        <span class="keyword">while</span>(canRun)&#123;</span><br><span class="line">            <span class="type">System</span>.out.println(<span class="string">"runnning"</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    public voi setCanRun(boolean canRun)&#123;</span><br><span class="line">        <span class="keyword">this</span>.canRun = canRun;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>  当外部调用者启动线程之后线程会持续执行，而按照以上的设计思路持有线程的对象如果想终止线程的执行的话很可能会设置<code>canRun</code>为false:<code>noVisiableThread.setCanRun(false)</code>,然而这种方式并不一定成功，因为当外部线程更改了状态后，并没有什么有效的机制来保证下次循环时能读取到最新状态，这就导致线程可能还会一直执行。为了保证内存可见性，可以使用锁实现，也可以用更轻量级的<code>volatile</code>实现。<br>volatile意为“易变的”，是Java中的一个修饰符，当变量生命为volatile类型时，编译器与运行时都会注意到这个变量是共享的，因此不会将该变量上的操作与其他内存操作一起重排序。volatile变量不会被缓存在寄存器活着对其他处理器不可见的地方，它可以保证修饰的值都从主存中读取，修改后也马上写入主存，从而实现相对锁同步较弱的一种同步。<br>因此上述代码只需将<code>canRun</code>修饰为<code>volatile</code>的变量就可以实现实时的停止核恢复该线程的执行了。即：</p>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">NoVisiableThread</span> <span class="keyword">extends</span> <span class="title">Thread</span></span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">volatile</span> <span class="keyword">boolean</span> canRun = <span class="keyword">true</span>;</span><br><span class="line">    <span class="annotation">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">while</span>(canRun)&#123;</span><br><span class="line">            System.out.println(<span class="string">"runnning"</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> voi <span class="title">setCanRun</span><span class="params">(<span class="keyword">boolean</span> canRun)</span></span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.canRun = canRun;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>volatile虽然使用起来非常简单，但是由于它的实现机制，仅当volatile变量能简化代码的实现以及对同步策略的验证时才可以使用它。volatile变量使用的正确方式包括：确保他们自身状态的可见性、确保他们所引用对象的状态的可见性以及标识一些重要的程序生命周期事件的发生（例如初始或关闭），只有当下面的所有条件都被满足时才应该使用volatile变量：<br>对变量的写入操作不依赖变量的当前值，或者能确保只有单个线程能改变该变量的值；<br>该变量不会与其他状态变量一起纳入不变性条件中<br>在访问变量时不需要加锁</p>
+<ul>
+<li><font size="+1">线程封闭</font>
+
+<p>  以上介绍了如何确保共享变量同步与互斥的一些方法，这些是必须掌握的，但有些情况下我们可以考虑如何避免对状态的共享，即将问题还原到单线程的串行执行方式上去。这就是“线程封闭”的作用，它是实现线程安全性的最简单方式之一，就像我们之前说的没有并发就不需要同步与互斥，当一个状态完全被封闭在一个对象或一段代码中时，它本身就具有线程安全性，虽然状态本身并不是线程安全的，这种通过避免多线程访问同一状态的解决方式称为“线程封闭”。<br>  线程封闭的应用很广泛，我们知道一般的GUI框架比如swing，android UI中，各种UI元素和相关操作都只能在主线程执行，这样就避免了对这些状态的额外管理，同时也不会因为其它线程而阻塞UI造成屏幕卡顿的情况。<br>  Java语言本身及其核心库中也提供了一些机制来实现线程封闭性，包括局部变量、ThreadLocal变量等等。</p>
+<ul>
+<li><p>Ad-hoc线程封闭</p>
+<p>  这是非常脆弱的一种线程封闭方式，因为没有任何语言机制来保证它的正确性，它完全由程序实现承担，即程序编写人员要假设某段代码永远不会被多线程同时执行，从而不为它采取额外的同步互斥措施</p>
+</li>
+<li><p>栈封闭</p>
+<p>  这是线程封闭的一种特例，对状态的访问只能通过局部变量，而每个线程也都有自己的局部变量，线程间的局部变量也互相不可见，这是相对于Ad-hoc线程封闭方式来说更健壮的一种方式。不过千万要注意一定要考察局部变量的溢出，即作用域超出创建的代码段范围从而导致被其他线程持有又引发并发访问的情况。</p>
+</li>
+<li><p>ThreadLocal变量</p>
+<p>  利用ThreadLocal封装的状态将在每个线程都拥有一个副本，彼此之间的状态不会干扰，状态值是和线程绑定的。它常用来防止可变的单实例变量或全局变量进行共享，TreadLocal的实现原理以后会再单独介绍,先来看一个例子.例如，在与数据库有紧密联系的应用程序中，程序的很多方法可能都需要访问数据库。在系统的每个方法中都包含一个 Connection 作为参数是不方便的 — 用“单子”来访问连接可能是一个虽然更粗糙，但却方便得多的技术。然而，多个线程不能安全地共享一个 JDBC Connection ，通过使用“单子”中的 ThreadLocal ，我们就能让我们的程序中的任何类容易地获取每线程 Connection 的一个引用。这样，我们可以认为 ThreadLocal 允许我们创建每个线程单例。</p>
+  <figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">public <span class="class"><span class="keyword">class</span> <span class="title">ConnectionDispenser</span> &#123;</span> </span><br><span class="line"> 	<span class="keyword">private</span> static <span class="class"><span class="keyword">class</span> <span class="title">ThreadLocalConnection</span> <span class="keyword"><span class="keyword">extends</span></span> <span class="title">ThreadLocal</span> &#123;</span></span><br><span class="line">   		public <span class="type">Object</span> initialValue() &#123;</span><br><span class="line">     			<span class="keyword">return</span> <span class="type">DriverManager</span>.getConnection(<span class="type">ConfigurationSingleton</span>.getDbUrl());</span><br><span class="line">   		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">			 </span><br><span class="line">	<span class="keyword">private</span> <span class="type">ThreadLocalConnection</span> conn = <span class="keyword">new</span> <span class="type">ThreadLocalConnection</span>();</span><br><span class="line"> 	public static <span class="type">Connection</span> getConnection() &#123;</span><br><span class="line">   		<span class="keyword">return</span> (<span class="type">Connection</span>) conn.get();</span><br><span class="line"> 	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><font size="+1">不可变对象</font>
+
+<p>  除线程封闭外满足同步需求的另一种方式是使用不可变对象。不可变对象一定是线程安全的，但不可变对象并不是单纯由final修饰就可以了，它需要同时满足三个条件：</p>
+<ul>
+<li>对象创建以后状态不能更改；</li>
+<li>对象的所有域都是final类型的；</li>
+<li>对象是正确创建的，即在创建过程中本对象没有溢出</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><p><font size="+1">如何设计线程安全的类</font><br>在设计线程安全类的过程中需要包含以下三个基本要素：</p>
+<ul>
+<li>找出构成对象状态的所有变量：从对象的域开始，递归低去找构成对象的全部状态</li>
+<li>找出约束状态变量的不变性条件：分析出状态的限制条件、状态间的依赖关系</li>
+<li>建立对象的并发访问管理策略：根据共享状态和不变形条件设计出并发访问时应该如何在满足不变性条件的情况下保证共享转台的正确访问</li>
+</ul>
+</li>
+<li><p><font size="+1">设计注意点</font></p>
+<ul>
+<li>状态空间越小，越容易判断线程的状态</li>
+<li>final类型的域使用越多，越能简化对象可能状态的分析过程</li>
+<li>良好的封装让共享状态尽量少地被外部直接访问</li>
+<li>尽量让需要使用锁同步的相关代码位置靠近，减少后续处理时遗漏同步互斥的处理</li>
+<li>尽量多使用内置的同步工具类,这些类不能解决时在再采取自己的同步互斥措施</li>
+<li>需要在现成同步工具类进一步封装需要同步的操作时，最好使用组合的方式，重新加统一锁，避免多个锁暴露给外部，造成操作的混淆和外部使用者的繁琐</li>
+<li>同步策略文档化：将某个对象使用的锁、不变性条件、外部调用者的注意事项记录在文档中，以便今后的维护，另外也可以采用自定义注解的方式在代码中结合注释更明确地指明相关操作的意义和注意点</li>
+</ul>
+</li>
+</ul>
+<p>对共享状态的同步互斥的不恰当处理会直接造成程序的隐患，以上介绍的相关概念、原理、方式和注意事项也仅仅是个人对之前这一方面的一些总结，以后还会逐步更新，下一篇文章将通过解析Java语言中典型同步工具类的实现和使用来更深入地理解和应用本篇文章介绍的知识。</p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2016/01/11/微信引发的思考/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption"><</strong>
+      <div class="article-nav-title">
+        
+          微信引发的思考
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2016/01/09/并发编程/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">并发编程之基础问答篇</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<div class="share_jia">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">分享到: &nbsp; </span>
+		<a class="jiathis_button_facebook"></a> 
+    <a class="jiathis_button_twitter"></a>
+    <a class="jiathis_button_plus"></a> 
+    <a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+    <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	</div>
+	<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
+
+
+
+
+
+
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="并发编程之同步互斥篇" data-title="并发编程之同步互斥篇" data-url="http://yoursite.com/2016/01/10/并发编程之同步互斥篇/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"true"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
+
+</div>
+      <footer id="footer">
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2016 starkshang
+    	</div>
+      	<div class="footer-right">
+      		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
+      	</div>
+    </div>
+  </div>
+</footer>
+    </div>
+    
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+
+
+<script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: true,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: false
+	}
+</script>
+<script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js" type="text/javascript"></script>
+<script src="/js/main.js" type="text/javascript"></script>
+
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  </div>
+</body>
+</html>
