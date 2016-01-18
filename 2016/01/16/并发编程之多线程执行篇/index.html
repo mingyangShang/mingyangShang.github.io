@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" >
+  <title>并发编程之多线程执行篇 | starkshang</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="多线程执行任务，核心就在于如何划分任务，如何管理执行任务的多个线程，用公式化的形式表示就是多线程执行任务＝清晰的任务边界＋明确的任务执行策略
+如何确定任务，什么样的任务才可以被放到单独的一个或者一组线程执行，这就需要明确任务的边界。我们希望任务之间尽量没有依赖关系，最好是相互独立的，这样一旦资源充分可用时，它们可以同时被执行，发挥并行的最大效果。同时这也就要求对问题要有着清晰的认识，要能从问题中挖">
+<meta property="og:type" content="article">
+<meta property="og:title" content="并发编程之多线程执行篇">
+<meta property="og:url" content="http://yoursite.com/2016/01/16/并发编程之多线程执行篇/index.html">
+<meta property="og:site_name" content="starkshang">
+<meta property="og:description" content="多线程执行任务，核心就在于如何划分任务，如何管理执行任务的多个线程，用公式化的形式表示就是多线程执行任务＝清晰的任务边界＋明确的任务执行策略
+如何确定任务，什么样的任务才可以被放到单独的一个或者一组线程执行，这就需要明确任务的边界。我们希望任务之间尽量没有依赖关系，最好是相互独立的，这样一旦资源充分可用时，它们可以同时被执行，发挥并行的最大效果。同时这也就要求对问题要有着清晰的认识，要能从问题中挖">
+<meta property="og:image" content="http://7xpoty.com1.z0.glb.clouddn.com/java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E6%A1%86%E6%9E%B6%E5%9B%BE.png">
+<meta property="og:updated_time" content="2016-01-18T03:00:23.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="并发编程之多线程执行篇">
+<meta name="twitter:description" content="多线程执行任务，核心就在于如何划分任务，如何管理执行任务的多个线程，用公式化的形式表示就是多线程执行任务＝清晰的任务边界＋明确的任务执行策略
+如何确定任务，什么样的任务才可以被放到单独的一个或者一组线程执行，这就需要明确任务的边界。我们希望任务之间尽量没有依赖关系，最好是相互独立的，这样一旦资源充分可用时，它们可以同时被执行，发挥并行的最大效果。同时这也就要求对问题要有着清晰的认识，要能从问题中挖">
+  
+    <link rel="alternative" href="/atom.xml" title="starkshang" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img lazy-src="http://7xpoty.com1.z0.glb.clouddn.com/%E5%AF%86%E7%8D%BE.jpg" class="js-avatar">
+			
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/">starkshang</a></h1>
+		</hgroup>
+
+		
+		<p class="header-subtitle">Since you want to do,why not now?</p>
+		
+
+		
+			<div class="switch-btn">
+				<div class="icon">
+					<div class="icon-ctn">
+						<div class="icon-wrap icon-house" data-idx="0">
+							<div class="birdhouse"></div>
+							<div class="birdhouse_holes"></div>
+						</div>
+						<div class="icon-wrap icon-ribbon hide" data-idx="1">
+							<div class="ribbon"></div>
+						</div>
+						
+						
+						<div class="icon-wrap icon-me hide" data-idx="3">
+							<div class="user"></div>
+							<div class="shoulder"></div>
+						</div>
+						
+					</div>
+					
+				</div>
+				<div class="tips-box hide">
+					<div class="tips-arrow"></div>
+					<ul class="tips-inner">
+						<li>菜单</li>
+						<li>标签</li>
+						
+						
+						<li>关于我</li>
+						
+					</ul>
+				</div>
+			</div>
+		
+
+		<div class="switch-area">
+			<div class="switch-wrap">
+				<section class="switch-part switch-part1">
+					<nav class="header-menu">
+						<ul>
+						
+							<li><a href="/">主页</a></li>
+				        
+							<li><a href="/archives">所有文章</a></li>
+				        
+						</ul>
+					</nav>
+					<nav class="header-nav">
+						<div class="social">
+							
+								<a class="github" target="_blank" href="https://github.com/mingyangShang" title="github">github</a>
+					        
+								<a class="zhihu" target="_blank" href="https://www.zhihu.com/people/shang-ming-yang-54" title="zhihu">zhihu</a>
+					        
+								<a class="facebook" target="_blank" href="https://www.facebook.com/profile.php?id=100010973622690" title="facebook">facebook</a>
+					        
+								<a class="google" target="_blank" href="/shangmingyanggo@gmail.com" title="google">google</a>
+					        
+						</div>
+					</nav>
+				</section>
+				
+				
+				<section class="switch-part switch-part2">
+					<div class="widget tagcloud" id="js-tagcloud">
+						<a href="/tags/java/" style="font-size: 15px;">java</a> <a href="/tags/并发编程/" style="font-size: 15px;">并发编程</a> <a href="/tags/读书笔记/" style="font-size: 20px;">读书笔记</a> <a href="/tags/随笔/" style="font-size: 10px;">随笔</a>
+					</div>
+				</section>
+				
+				
+				
+
+				
+				
+				<section class="switch-part switch-part3">
+				
+					<div id="js-aboutme">大连理工大学本科毕业，曾为阿里巴巴天猫无线实习生、腾讯MIG职实习生。熟悉android 开发，爱读书、爱打台球、爱技术，崇尚简洁的美。干自己该干的事，做自己想做的人。</div>
+				</section>
+				
+			</div>
+		</div>
+	</header>				
+</div>
+
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"></div>
+  		<h1 class="header-author js-mobile-header hide">starkshang</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+			
+				<img lazy-src="http://7xpoty.com1.z0.glb.clouddn.com/%E5%AF%86%E7%8D%BE.jpg" class="js-avatar">
+			
+			</div>
+			<hgroup>
+			  <h1 class="header-author">starkshang</h1>
+			</hgroup>
+			
+			<p class="header-subtitle">Since you want to do,why not now?</p>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/">主页</a></li>
+		        
+					<li><a href="/archives">所有文章</a></li>
+		        
+		        <div class="clearfix"></div>
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+						<a class="github" target="_blank" href="https://github.com/mingyangShang" title="github">github</a>
+			        
+						<a class="zhihu" target="_blank" href="https://www.zhihu.com/people/shang-ming-yang-54" title="zhihu">zhihu</a>
+			        
+						<a class="facebook" target="_blank" href="https://www.facebook.com/profile.php?id=100010973622690" title="facebook">facebook</a>
+			        
+						<a class="google" target="_blank" href="/shangmingyanggo@gmail.com" title="google">google</a>
+			        
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+
+      <div class="body-wrap"><article id="post-并发编程之多线程执行篇" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/01/16/并发编程之多线程执行篇/" class="article-date">
+  	<time datetime="2016-01-15T17:00:00.000Z" itemprop="datePublished">2016-01-16</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      并发编程之多线程执行篇
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/并发编程/">并发编程</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/读书笔记/">读书笔记</a></li></ul>
+	</div>
+
+        
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>多线程执行任务，核心就在于如何划分任务，如何管理执行任务的多个线程，用公式化的形式表示就是<strong>多线程执行任务＝清晰的任务边界＋明确的任务执行策略</strong></p>
+<p>如何确定任务，什么样的任务才可以被放到单独的一个或者一组线程执行，这就需要明确任务的边界。我们希望任务之间尽量没有依赖关系，最好是相互独立的，这样一旦资源充分可用时，它们可以同时被执行，发挥并行的最大效果。同时这也就要求对问题要有着清晰的认识，要能从问题中挖掘出子问题；还要控制好任务的粒度，保证并行化任务节省时间大于线程开销。以大多数网站服务器程序为例，每一个客户请求是独立的，同一时刻可能存在大量的请求，那么每一个客户请求就可以被视为一个任务。<br><a id="more"></a></p>
+<p>确定了任务之后，就要考虑如何利用多个线程来执行这些划分出来的任务。还是以服务器端接收请求为例，最简单的方式是为每一个请求都创建一个线程，这种方式实现起来很简单，每次都手动启动一个Thread，但是在大规模的并发程序中会有很多隐患：<br>&nbsp;&nbsp;&nbsp;&nbsp;要注意线程的生命周期活动，包括创建、运行、切换和终止这都是需要开销的，这样如果处理多个并发请求时，就会带来很大的开销用在处理线程的创建上，这样就减少了可用于真正处理请求任务的CPU时间，一旦有请求来不及处理的话，用户就会得到很慢的反馈甚至超时失败，另外线程相关的资源也都是存放在内存中的，当有多个并发请求时，就会占用大量的内存资源，当线程结束时也并不会被马上回收，这就导致了一些闲置的线程白白占用了可用于创建新线程的资源，可能就会造成下一次创建线程失败从而响应请求失败。</p>
+<p>导致无限制创建线程的这些缺点的原因就在于没有限制线程创建的最大数量，线程池的思想就解决了这个问题：线程池维护一组线程，线程的最大数量是有限制的，当有任务需要创建线程时都要从线程池中去取，如果线程池中有闲置线程直接使用，对这个任务来说就省去了重新创建线程的时间开销；当线程池内没有空闲线程可以直接使用时，此时如果线程数量还未达到最大限制，那么就创建线程处理任务，如果已经达到了最大限制，之后的请求就要等待直到有线程执行完毕又归还到线程池中。这样内存中的线程会控制在一个开发者设定的范围内，一方面保持了任务处理的快速响应，一方面减少了对内存的占用。</p>
+<p>注意到线程池的实现是要把任务的提交和执行解耦开的，当有任务需要执行时，只需要提交一个任务给工作线程的管理者，而不用去关注这个任务究竟是哪个线程来执行，任务的执行者只需要从任务队列中取任务而不用关心这些任务是谁提交的。通用的线程池执行框架可以构建为单独的模块，业务方只负责提交任务给任务执行框架而不需关心任务框架的内部实现，通过配置线程池的不同策略就可以控制任务的执行策略，这就大大简化了多线程程序的开发。</p>
+<p>这是java多线程执行框架的类图，希望能先让大家对这个框架的设计有一个大致的了解：<br><img src="http://7xpoty.com1.z0.glb.clouddn.com/java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E6%A1%86%E6%9E%B6%E5%9B%BE.png" alt=""></p>
+<ul>
+<li><code>Executor</code>是对任务执行者的抽象，它的工作是也仅是执行任务，所以它只有一个方法：</li>
+</ul>
+<p><code>void execute(Runnable command);</code></p>
+<ul>
+<li><p><code>ExecutorService</code>继承于<code>Executor</code>，它在执行任务的基础上还负责管理任务执行者的生命周期和对任务执行状态的跟踪，通过<code>shutdown()</code>方法可以关闭线程池，拒绝新任务的执行，移除已提交但未执行的任务，但它会让正在运行的线程执行完毕，如果想让线程池马上关闭的话可以使用<code>shutdownNow()</code>，但这并一定能保证正在运行的线程真的能马上关闭，因为它的实现是基于中断机制的，即通过调用<code>interrupt()</code>方法中断线程，如果线程不响应中断的话线程还是会等待执行完毕后才自动关闭，（关于中断在下一篇博客会有更详细的介绍），可以通过<code>isShutdown()</code>查询线程池的状态</p>
+</li>
+<li><p><code>ScheduledExecutorService</code>继承于<code>ExecutorService</code>,扩展了对任务的延迟和周期性执行的任务执行策略</p>
+</li>
+<li><code>Callable</code>类似于<code>Runnable</code>,都是对可执行任务的抽象，不同于<code>Runnable</code>的是它可以返回任务执行后的结果，并且在不能返回结果时会抛出异常</li>
+<li><code>Future</code>代表的是对任务执行后状态的抽象，通过它可以控制任务执行的生命周期，比如使用<code>cancel()</code>方法停止任务的执行，<code>get()</code>方法查询任务执行的结果，作为一种结果状态，它不能直接被创建，只有在有任务被执行后才能产生</li>
+<li><code>RunnableFuture</code>继承于<code>Runnable</code>和<code>Future</code>,可以认为是一个具有完整生命周期状态的任务，一个可以自己掌控自己生老病死的任务</li>
+<li><code>AbstractExecutorService</code>实现了<code>ExecutorService</code>接口并提供了任务执行方法的默认实现，另外还提供了可执行任务<code>Runnable</code>、<code>Callable</code>到<code>RunnableFuture</code>的转换策略，从而统一并简化了后续任务的管理</li>
+<li><code>ThreadPoolExecutor</code>继承于<code>AbstractExecutorService</code>,实现了利用线程池执行任务的策略<br><code>Executors</code>则是对任务、任务执行状态、任务执行者、任务执行策略封装后方便开发者使用的工具类</li>
+</ul>
+<p>线程池的不同策略体现在线程数量、线程过期时间和绑定的任务队列对任务的处理方式上，这些都可以通过<code>ThreadExector</code>的构造函数设定：</p>
+<figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">ThreadPoolExecutor</span><span class="params">(<span class="keyword">int</span> corePoolSize,</span><br><span class="line">                              <span class="keyword">int</span> maximumPoolSize,</span><br><span class="line">                              <span class="keyword">long</span> keepAliveTime,</span><br><span class="line">                              TimeUnit unit,</span><br><span class="line">                              BlockingQueue&lt;Runnable&gt; workQueue,</span><br><span class="line">                              ThreadFactory threadFactory,</span><br><span class="line">                              RejectedExecutionHandler <span class="keyword">handler</span>)</span> </span>&#123;</span><br></pre></td></tr></table></figure>
+<p><strong>corePoolSize</strong>: 核心线程数量<br><strong>maximunPoolSize: 最大线程数量
+</strong>keepAliveTime<strong>: 线程结束后最后可以存活的时间<br>unit</strong>: 时间单元，@see TimeUnit<br><strong>workQueue</strong>:任务队列，管理任务的读取<br><strong>threadFactory</strong>: 创建实际工作的线程的工厂类，可以定制Thread类<br><strong>handler</strong>: 处理任务被拒绝执行的情况,一般是因为已调用了<code>shutdown()</code>关闭线程池</p>
+<p><code>Executors</code>中就提供了几个常用的不同类型线程池创建方法：</p>
+<ul>
+<li><p><code>Executors#newFixedThreadPool</code>通过设置核心线程数量等于最大线程数量和将多余线程的过期时间置为0保证了生成的线程池中线程数量是固定的，如果当前没有闲置线程，之后提交的任务会阻塞在与线程池绑定的队列中，直到有线程执行完可重新利用时才从队列中取出请求处理；一旦有线程由于一些不可控的情况被系统终止，那么线程池能保证再重新创建于相同数量的线程保证可用线程的数量不变。多用于一些很稳定固定的正规并发线程，多用于服务器:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">return</span> <span class="keyword">new</span> ThreadPoolExecutor(nThreads, nThreads,</span><br><span class="line">                                      <span class="number">0L</span>, TimeUnit.MILLISECONDS,</span><br><span class="line">                                      <span class="keyword">new</span> LinkedBlockingQueue&lt;Runnable&gt;());</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>Executors#newSingleThreadExecutor</code>通过设置核心线程数量和最大线程数量都为1使得线程池中只存在一个线程可以使用，其他策略同<code>Executors#newFixedThreadPool</code>生成的线程池</p>
+</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> ThreadPoolExecutor(<span class="number">1</span>, <span class="number">1</span>,</span><br><span class="line">                             <span class="number">0L</span>, TimeUnit.MILLISECONDS,</span><br><span class="line">                             ew LinkedBlockingQueue&lt;Runnable&gt;())</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>Executors#newCachedThreadPool</code>通过设置核心线程数量为0、最大线程数量无限制和执行完毕的线程过期时间为60s构造了一个可缓存线程的线程池，一开始线程池的数量为0，请求到来时发现没有线程可处理就创建一个线程，下次请求到来时若之前执行完毕的线程还未因过期被回收就可以直接使用线程，线程的最大数量是没有限制的，但实际上最大线程数量可能限制于系统资源。这种线程池适合于频繁执行而且周期短的任务</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> ThreadPoolExecutor(<span class="number">0</span>, Integer.MAX_VALUE,</span><br><span class="line">                                      <span class="number">60L</span>, TimeUnit.SECONDS,</span><br><span class="line">                                      <span class="keyword">new</span> SynchronousQueue&lt;Runnable&gt;(),</span><br><span class="line">                                      threadFactory);</span><br></pre></td></tr></table></figure>
+<p>如果没有线程池的话每次新建任务我们就要手动创建一个线程执行任务：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;<span class="number">5</span>;++i)&#123;</span><br><span class="line">    <span class="keyword">new</span> Thread(<span class="keyword">new</span> Runnable()&#123;</span><br><span class="line">        <span class="comment">//execute Task</span></span><br><span class="line">    &#125;).start();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>有了线程池后</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.concurrent.ExecutorService; </span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.Executors; </span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestThreadPool</span></span>&#123; </span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span>&#123; </span><br><span class="line">        ExecutorService executorService = Executors.newCachedThreadPool(); </span><br><span class="line"><span class="comment">//      ExecutorService executorService = Executors.newFixedThreadPool(5);</span></span><br><span class="line"><span class="comment">//		ExecutorService executorService = Executors.newSingleThreadExecutor();</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">5</span>; i++)&#123; </span><br><span class="line">			executorService.execute(<span class="keyword">new</span> TestRunnable()); </span><br><span class="line">			System.out.println(<span class="string">"************* a"</span> + i + <span class="string">" *************"</span>); </span><br><span class="line">		&#125; </span><br><span class="line">        executorService.shutdown(); </span><br><span class="line">	&#125; </span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">TestRunnable</span> <span class="keyword">implements</span> <span class="title">Runnable</span></span>&#123; </span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span></span>&#123; </span><br><span class="line">		System.out.println(Thread.currentThread().getName() + <span class="string">"线程"</span>); </span><br><span class="line">    &#125; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>还有一个很有意思的线程池类型：<br><code>Executors#newWorkStealingPool</code>是使用线程池作为执行任务线程的管理者，来实现fork/join模式的任务执行策略，所谓fork/join（详解见<a href="http://www.oracle.com/technetwork/articles/java/fork-join-422606.html" target="_blank" rel="external">java doc</a>），就是一种利用一台计算机上的多个处理器进行同类型问题并行计算的模式，通过对大规模问题逐步分解，直到可以作为独立的小任务在单独的线程中执行，结合线程间的通信机制实现相当于递归迭代的并行版本，这和现在流行的Map/Reduce模式有些类似，只不过Map/Reduce是在多台计算机上执行的。</li>
+</ul>
+<p>这一篇仅是对多线程执行任务做了大概的原理和使用的介绍，如果各个线程执行的任务真的能够彼此独立，那多线程并发会简单很多，因为这样就不需要线程间数据的传递和线程间的协调，但很多时候任务是不太可能被划分成完全独立的任务的，这就需要线程间的通信来实现线程间的协调策略和消息传递，这里面会涉及到很多深层次一些的概念。</p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2016/01/11/微信引发的思考/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">微信引发的思考</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<div class="share_jia">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">分享到: &nbsp; </span>
+		<a class="jiathis_button_facebook"></a> 
+    <a class="jiathis_button_twitter"></a>
+    <a class="jiathis_button_plus"></a> 
+    <a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+    <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	</div>
+	<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
+
+
+
+
+
+
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="并发编程之多线程执行篇" data-title="并发编程之多线程执行篇" data-url="http://yoursite.com/2016/01/16/并发编程之多线程执行篇/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"true"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
+
+</div>
+      <footer id="footer">
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2016 starkshang
+    	</div>
+      	<div class="footer-right">
+      		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
+      	</div>
+    </div>
+  </div>
+</footer>
+    </div>
+    
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+
+
+<script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: true,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: false
+	}
+</script>
+<script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js" type="text/javascript"></script>
+<script src="/js/main.js" type="text/javascript"></script>
+
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  </div>
+</body>
+</html>
