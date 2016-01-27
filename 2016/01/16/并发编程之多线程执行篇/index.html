@@ -15,7 +15,7 @@
 <meta property="og:description" content="多线程执行任务，核心就在于如何划分任务，如何管理执行任务的多个线程，用公式化的形式表示就是多线程执行任务＝清晰的任务边界＋明确的任务执行策略
 如何确定任务，什么样的任务才可以被放到单独的一个或者一组线程执行，这就需要明确任务的边界。我们希望任务之间尽量没有依赖关系，最好是相互独立的，这样一旦资源充分可用时，它们可以同时被执行，发挥并行的最大效果。同时这也就要求对问题要有着清晰的认识，要能从问题中挖">
 <meta property="og:image" content="http://7xpoty.com1.z0.glb.clouddn.com/java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E6%A1%86%E6%9E%B6%E5%9B%BE.png">
-<meta property="og:updated_time" content="2016-01-18T03:00:23.000Z">
+<meta property="og:updated_time" content="2016-01-26T17:10:32.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="并发编程之多线程执行篇">
 <meta name="twitter:description" content="多线程执行任务，核心就在于如何划分任务，如何管理执行任务的多个线程，用公式化的形式表示就是多线程执行任务＝清晰的任务边界＋明确的任务执行策略
@@ -37,7 +37,7 @@
 	<header id="header" class="inner">
 		<a href="/" class="profilepic">
 			
-			<img lazy-src="http://7xpoty.com1.z0.glb.clouddn.com/%E5%AF%86%E7%8D%BE.jpg" class="js-avatar">
+			<img lazy-src="http://7xpoty.com1.z0.glb.clouddn.com/%E5%AF%86%E7%8D%BE2.png" class="js-avatar">
 			
 		</a>
 
@@ -144,7 +144,7 @@
 		<header id="header" class="inner">
 			<div class="profilepic">
 			
-				<img lazy-src="http://7xpoty.com1.z0.glb.clouddn.com/%E5%AF%86%E7%8D%BE.jpg" class="js-avatar">
+				<img lazy-src="http://7xpoty.com1.z0.glb.clouddn.com/%E5%AF%86%E7%8D%BE2.png" class="js-avatar">
 			
 			</div>
 			<hgroup>
@@ -244,7 +244,7 @@
 </strong>keepAliveTime<strong>: 线程结束后最后可以存活的时间<br>unit</strong>: 时间单元，@see TimeUnit<br><strong>workQueue</strong>:任务队列，管理任务的读取<br><strong>threadFactory</strong>: 创建实际工作的线程的工厂类，可以定制Thread类<br><strong>handler</strong>: 处理任务被拒绝执行的情况,一般是因为已调用了<code>shutdown()</code>关闭线程池</p>
 <p><code>Executors</code>中就提供了几个常用的不同类型线程池创建方法：</p>
 <ul>
-<li><p><code>Executors#newFixedThreadPool</code>通过设置核心线程数量等于最大线程数量和将多余线程的过期时间置为0保证了生成的线程池中线程数量是固定的，如果当前没有闲置线程，之后提交的任务会阻塞在与线程池绑定的队列中，直到有线程执行完可重新利用时才从队列中取出请求处理；一旦有线程由于一些不可控的情况被系统终止，那么线程池能保证再重新创建于相同数量的线程保证可用线程的数量不变。多用于一些很稳定固定的正规并发线程，多用于服务器:</p>
+<li><p><code>Executors#newFixedThreadPool</code>通过设置核心线程数量等于最大线程数量和将多余线程的过期时间置为0保证了生成的线程池中线程数量是固定的，如果当前没有闲置线程，之后提交的任务会阻塞在与线程池绑定的队列中，直到有线程执行完可重新利用时才从队列中取出请求处理；一旦有线程由于一些不可控的情况被系统终止，那么线程池能保证重新创建相同数量的线程来维持可用线程的数量不变。多用于一些很稳定固定的正规并发线程，多用于服务器:</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">return</span> <span class="keyword">new</span> ThreadPoolExecutor(nThreads, nThreads,</span><br><span class="line">                                      <span class="number">0L</span>, TimeUnit.MILLISECONDS,</span><br><span class="line">                                      <span class="keyword">new</span> LinkedBlockingQueue&lt;Runnable&gt;());</span><br></pre></td></tr></table></figure>
 </li>
 <li><p><code>Executors#newSingleThreadExecutor</code>通过设置核心线程数量和最大线程数量都为1使得线程池中只存在一个线程可以使用，其他策略同<code>Executors#newFixedThreadPool</code>生成的线程池</p>
