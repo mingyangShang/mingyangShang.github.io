@@ -31,7 +31,7 @@
 <meta property="og:image" content="http://7xpoty.com1.z0.glb.clouddn.com/Peer-Bandwidth.png">
 <meta property="og:image" content="http://7xpoty.com1.z0.glb.clouddn.com/publish-flow.png">
 <meta property="og:image" content="http://7xpoty.com1.z0.glb.clouddn.com/play-flow.png">
-<meta property="og:updated_time" content="2016-03-07T12:39:38.000Z">
+<meta property="og:updated_time" content="2016-03-07T12:57:50.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="带你吃透RTMP">
 <meta name="twitter:description" content="RTMP协议是Real Time Message Protocol(实时信息传输协议)的缩写，它是由Adobe公司提出的一种应用层的协议，用来解决多媒体数据传输流的多路复用（Multiplexing）和分包（packetizing）的问题。随着VR技术的发展，视频直播等领域逐渐活跃起来，RTMP作为业内广泛使用的协议也重新被相关开发者重视起来。正好最近在从事这方面的工作，在此记录下自己对RTMP的">
@@ -233,7 +233,7 @@
     <div class="article-entry" itemprop="articleBody">
       
         <p>RTMP协议是Real Time Message Protocol(实时信息传输协议)的缩写，它是由Adobe公司提出的一种应用层的协议，用来解决多媒体数据传输流的多路复用（Multiplexing）和分包（packetizing）的问题。随着VR技术的发展，视频直播等领域逐渐活跃起来，RTMP作为业内广泛使用的协议也重新被相关开发者重视起来。正好最近在从事这方面的工作，在此记录下自己对RTMP的理解，文章内容多翻译自英文版RTMP文档，按照本人的理解重新整理，希望可以帮助想要了解RTMP协议的朋友，也方面自己日后查阅。<br><a id="more"></a><hr></p>
-<font size="+1"><strong>1. 总体介绍：</strong></font><br> RTMP协议是应用层协议，是要靠底层可靠的传输层协议（通常是TCP）来保证信息传输的可靠性的。在基于传输层协议的链接建立完成后，RTMP协议也要客户端和服务器通过“握手”来建立基于传输层链接之上的RTMP Connection链接，在Connection链接上会传输一些控制信息，如SetChunkSize,SetACKWindowSize。其中CreateStream命令会创建一个Stream链接，用于传输具体的音视频数据和控制这些信息传输的命令信息。RTMP协议传输时会对数据做自己的格式化，这种格式的消息我们称之为RTMP Message，而实际传输的时候为了更好地实现多路复用、分包和信息的公平性，发送端会把Message划分为带有Message ID的Chunk，每个Chunk可能是一个单独的Message，也可能是Message的一部分，在接受端会根据chunk中包含的data的长度，message id和message的长度把chunk还原成完整的Message，从而实现信息的收发。<br> <font size="+1"><strong>2. 握手</strong></font><br>  要建立一个有效的RTMP Connection链接，首先要“<strong>握手</strong>”:客户端要向服务器发送C0,C1,C2（按序）三个chunk，服务器向客户端发送S0,S1,S2（按序）三个chunk，然后才能进行有效的信息传输。RTMP协议本身并没有规定这6个Message的具体传输顺序，但RTMP协议的实现者需要保证这几点：<br><br>   - 客户端要等收到S1之后才能发送C2<br>   - 客户端要等收到S2之后才能发送其他信息（控制信息和真实音视频等数据）<br>   - 服务端要等到收到C0之后发送S1<br>   - 服务端必须等到收到C1之后才能发送S2<br>   - 服务端必须等到收到C2之后才能发送其他信息（控制信息和真实音视频等数据）<br>   如果每次发送一个握手chunk的话握手顺序会是这样：<br><br>    <img src="http://7xpoty.com1.z0.glb.clouddn.com/RTMP-HandShake.png" alt=""><br><br>    理论上来讲只要满足以上条件，如何安排6个Message的顺序都是可以的，但实际实现中为了在保证握手的身份验证功能的基础上尽量减少通信的次数，一般的发送顺序是这样的，这一点可以通过wireshark抓ffmpeg推流包进行验证：<br>    ｜client｜Server ｜<br><br>    ｜－－－C0+C1—-&gt;| <br><br>    ｜&lt;－－S0+S1+S2– | <br><br>    ｜－－－C2-－－－&gt; ｜ <br><br><br> <font size="+1"><strong>3. RTMP Chunk Stream</strong></font>
+<font size="+1"><strong>1. 总体介绍：</strong></font><br> RTMP协议是应用层协议，是要靠底层可靠的传输层协议（通常是TCP）来保证信息传输的可靠性的。在基于传输层协议的链接建立完成后，RTMP协议也要客户端和服务器通过“握手”来建立基于传输层链接之上的RTMP Connection链接，在Connection链接上会传输一些控制信息，如SetChunkSize,SetACKWindowSize。其中CreateStream命令会创建一个Stream链接，用于传输具体的音视频数据和控制这些信息传输的命令信息。RTMP协议传输时会对数据做自己的格式化，这种格式的消息我们称之为RTMP Message，而实际传输的时候为了更好地实现多路复用、分包和信息的公平性，发送端会把Message划分为带有Message ID的Chunk，每个Chunk可能是一个单独的Message，也可能是Message的一部分，在接受端会根据chunk中包含的data的长度，message id和message的长度把chunk还原成完整的Message，从而实现信息的收发。<br> <font size="+1"><strong>2. 握手</strong></font><br>  要建立一个有效的RTMP Connection链接，首先要“<strong>握手</strong>”:客户端要向服务器发送C0,C1,C2（按序）三个chunk，服务器向客户端发送S0,S1,S2（按序）三个chunk，然后才能进行有效的信息传输。RTMP协议本身并没有规定这6个Message的具体传输顺序，但RTMP协议的实现者需要保证这几点：<br>   - 客户端要等收到S1之后才能发送C2<br>   - 客户端要等收到S2之后才能发送其他信息（控制信息和真实音视频等数据）<br>   - 服务端要等到收到C0之后发送S1<br>   - 服务端必须等到收到C1之后才能发送S2<br>   - 服务端必须等到收到C2之后才能发送其他信息（控制信息和真实音视频等数据）<br>   如果每次发送一个握手chunk的话握手顺序会是这样：<br><br>    <img src="http://7xpoty.com1.z0.glb.clouddn.com/RTMP-HandShake.png" alt=""><br><br>    理论上来讲只要满足以上条件，如何安排6个Message的顺序都是可以的，但实际实现中为了在保证握手的身份验证功能的基础上尽量减少通信的次数，一般的发送顺序是这样的，这一点可以通过wireshark抓ffmpeg推流包进行验证：<br>    ｜client｜Server ｜<br>    ｜－－－C0+C1—-&gt;|<br>    ｜&lt;－－S0+S1+S2– |<br>    ｜－－－C2-－－－&gt; ｜<br><br> <font size="+1"><strong>3. RTMP Chunk Stream</strong></font>
 
 <p>  Chunk Stream是对传输RTMP Chunk的流的逻辑上的抽象，客户端和服务器之间有关RTMP的信息都在这个流上通信。这个流上的操作也是我们关注RTMP协议的重点。</p>
   <font size="+1"><strong>3.1 Message(消息)</strong></font>
@@ -715,7 +715,7 @@
 </tbody>
 </table>
 <p>如果Pause为true即表示客户端请求暂停的话，服务端暂停对应的流会返回NetStream.Pause.Notify的onStatus命令来告知客户端当前流处于暂停的状态，当Pause为false时，服务端会返回NetStream.Unpause.Notify的命令来告知客户端当前流恢复。如果服务端对该命令响应失败，返回_error信息。</p>
-<font size="+1"><strong>5. 推流流程</strong></font><br><strong>5.1 推流流程</strong><br><img src="http://7xpoty.com1.z0.glb.clouddn.com/publish-flow.png" alt=""><br><br><strong>5.2 播流流程</strong><br><img src="http://7xpoty.com1.z0.glb.clouddn.com/play-flow.png" alt=""><br><br><font size="+1"><strong>6. 新手建议</strong></font>
+<font size="+1"><strong>5. 代表流程</strong></font><br><strong>5.1 推流流程</strong><br><img src="http://7xpoty.com1.z0.glb.clouddn.com/publish-flow.png" alt=""><br><br><strong>5.2 播流流程</strong><br><img src="http://7xpoty.com1.z0.glb.clouddn.com/play-flow.png" alt=""><br><br><font size="+1"><strong>6. 新手建议</strong></font>
 
 <p>如果读者仔细读完了上面讲的RTMP协议，想必会觉得RTMP协议非常繁琐，事实也确实是这样，RTMP协议中充斥着很多冗余的字段，比如三次握手中的时间戳的校对，还有一些特殊的命令，如FCPublish、UnFCPublish等，但在实际实现中为了保证更大兼容性通常还是要处理这些看似多余的命令。加上Adobe对RTMP协议的实现细节有些并没有按照协议来或者协议中没有写清楚自己搞了一套实现，其他应用开发时还要兼容Adobe错误的实现，从而使的RTMP也一直为开发者所诟病。但不管怎样，RTMP确实提供了一种能够全面并且实现简单的协议来保证流信息的传输，这方面暂时还没有一种更完善更简洁的协议能够取代它在视频流开发中的地位。<br>新人一开始接触RTMP的时候肯定会觉得头大，这也是RTMP协议不简洁的后果。建议读者在学习时先过一遍协议理解大概的概念和流程，然后对照wireshark抓的包，和协议进行比对，<br>这样将理论和实践结合，应该会理解的更快一点。</p>
 
