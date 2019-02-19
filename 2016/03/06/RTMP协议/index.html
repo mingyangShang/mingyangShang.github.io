@@ -6,12 +6,14 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <title>带你吃透RTMP | starkshang</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="RTMP协议是Real Time Message Protocol(实时信息传输协议)的缩写，它是由Adobe公司提出的一种应用层的协议，用来解决多媒体数据传输流的多路复用（Multiplexing）和分包（packetizing）的问题。随着VR技术的发展，视频直播等领域逐渐活跃起来，RTMP作为业内广泛使用的协议也重新被相关开发者重视起来。正好最近在从事这方面的工作，在此记录下自己对RTMP的">
+  <meta name="description" content="博客已迁到简书，有兴趣的朋友可以移至这里 
+RTMP协议是Real Time Message Protocol(实时信息传输协议)的缩写，它是由Adobe公司提出的一种应用层的协议，用来解决多媒体数据传输流的多路复用（Multiplexing）和分包（packetizing）的问题。随着VR技术的发展，视频直播等领域逐渐活跃起来，RTMP作为业内广泛使用的协议也重新被相关开发者重视起来。正好最近在">
 <meta property="og:type" content="article">
 <meta property="og:title" content="带你吃透RTMP">
 <meta property="og:url" content="http://yoursite.com/2016/03/06/RTMP协议/index.html">
 <meta property="og:site_name" content="starkshang">
-<meta property="og:description" content="RTMP协议是Real Time Message Protocol(实时信息传输协议)的缩写，它是由Adobe公司提出的一种应用层的协议，用来解决多媒体数据传输流的多路复用（Multiplexing）和分包（packetizing）的问题。随着VR技术的发展，视频直播等领域逐渐活跃起来，RTMP作为业内广泛使用的协议也重新被相关开发者重视起来。正好最近在从事这方面的工作，在此记录下自己对RTMP的">
+<meta property="og:description" content="博客已迁到简书，有兴趣的朋友可以移至这里 
+RTMP协议是Real Time Message Protocol(实时信息传输协议)的缩写，它是由Adobe公司提出的一种应用层的协议，用来解决多媒体数据传输流的多路复用（Multiplexing）和分包（packetizing）的问题。随着VR技术的发展，视频直播等领域逐渐活跃起来，RTMP作为业内广泛使用的协议也重新被相关开发者重视起来。正好最近在">
 <meta property="og:image" content="http://7xpoty.com1.z0.glb.clouddn.com/RTMP-HandShake.png">
 <meta property="og:image" content="http://7xpoty.com1.z0.glb.clouddn.com/QQ20160228-0@2x.png">
 <meta property="og:image" content="http://7xpoty.com1.z0.glb.clouddn.com/chunk-basicheader1.png">
@@ -31,10 +33,11 @@
 <meta property="og:image" content="http://7xpoty.com1.z0.glb.clouddn.com/Peer-Bandwidth.png">
 <meta property="og:image" content="http://7xpoty.com1.z0.glb.clouddn.com/publish-flow.png">
 <meta property="og:image" content="http://7xpoty.com1.z0.glb.clouddn.com/play-flow.png">
-<meta property="og:updated_time" content="2017-05-02T01:54:01.000Z">
+<meta property="og:updated_time" content="2019-02-19T11:54:14.047Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="带你吃透RTMP">
-<meta name="twitter:description" content="RTMP协议是Real Time Message Protocol(实时信息传输协议)的缩写，它是由Adobe公司提出的一种应用层的协议，用来解决多媒体数据传输流的多路复用（Multiplexing）和分包（packetizing）的问题。随着VR技术的发展，视频直播等领域逐渐活跃起来，RTMP作为业内广泛使用的协议也重新被相关开发者重视起来。正好最近在从事这方面的工作，在此记录下自己对RTMP的">
+<meta name="twitter:description" content="博客已迁到简书，有兴趣的朋友可以移至这里 
+RTMP协议是Real Time Message Protocol(实时信息传输协议)的缩写，它是由Adobe公司提出的一种应用层的协议，用来解决多媒体数据传输流的多路复用（Multiplexing）和分包（packetizing）的问题。随着VR技术的发展，视频直播等领域逐渐活跃起来，RTMP作为业内广泛使用的协议也重新被相关开发者重视起来。正好最近在">
   
     <link rel="alternative" href="/atom.xml" title="starkshang" type="application/atom+xml">
   
@@ -232,7 +235,8 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>RTMP协议是Real Time Message Protocol(实时信息传输协议)的缩写，它是由Adobe公司提出的一种应用层的协议，用来解决多媒体数据传输流的多路复用（Multiplexing）和分包（packetizing）的问题。随着VR技术的发展，视频直播等领域逐渐活跃起来，RTMP作为业内广泛使用的协议也重新被相关开发者重视起来。正好最近在从事这方面的工作，在此记录下自己对RTMP的理解，文章内容多翻译自英文版RTMP文档，按照本人的理解重新整理，希望可以帮助想要了解RTMP协议的朋友，也方面自己日后查阅。<br><a id="more"></a><hr></p>
+        <p><i>博客已迁到简书，有兴趣的朋友可以移至<a href="https://www.jianshu.com/p/b2144f9bbe28" target="_blank" rel="external">这里</a></i> <br></p>
+<p>RTMP协议是Real Time Message Protocol(实时信息传输协议)的缩写，它是由Adobe公司提出的一种应用层的协议，用来解决多媒体数据传输流的多路复用（Multiplexing）和分包（packetizing）的问题。随着VR技术的发展，视频直播等领域逐渐活跃起来，RTMP作为业内广泛使用的协议也重新被相关开发者重视起来。正好最近在从事这方面的工作，在此记录下自己对RTMP的理解，文章内容多翻译自英文版RTMP文档，按照本人的理解重新整理，希望可以帮助想要了解RTMP协议的朋友，也方面自己日后查阅。<br><a id="more"></a><hr></p>
 <font size="+1"><strong>1. 总体介绍：</strong></font><br> RTMP协议是应用层协议，是要靠底层可靠的传输层协议（通常是TCP）来保证信息传输的可靠性的。在基于传输层协议的链接建立完成后，RTMP协议也要客户端和服务器通过“握手”来建立基于传输层链接之上的RTMP Connection链接，在Connection链接上会传输一些控制信息，如SetChunkSize,SetACKWindowSize。其中CreateStream命令会创建一个Stream链接，用于传输具体的音视频数据和控制这些信息传输的命令信息。RTMP协议传输时会对数据做自己的格式化，这种格式的消息我们称之为RTMP Message，而实际传输的时候为了更好地实现多路复用、分包和信息的公平性，发送端会把Message划分为带有Message ID的Chunk，每个Chunk可能是一个单独的Message，也可能是Message的一部分，在接受端会根据chunk中包含的data的长度，message id和message的长度把chunk还原成完整的Message，从而实现信息的收发。<br> <font size="+1"><strong>2. 握手</strong></font><br>  要建立一个有效的RTMP Connection链接，首先要“<strong>握手</strong>”:客户端要向服务器发送C0,C1,C2（按序）三个chunk，服务器向客户端发送S0,S1,S2（按序）三个chunk，然后才能进行有效的信息传输。RTMP协议本身并没有规定这6个Message的具体传输顺序，但RTMP协议的实现者需要保证这几点：<br>   - 客户端要等收到S1之后才能发送C2<br>   - 客户端要等收到S2之后才能发送其他信息（控制信息和真实音视频等数据）<br>   - 服务端要等到收到C0之后发送S1<br>   - 服务端必须等到收到C1之后才能发送S2<br>   - 服务端必须等到收到C2之后才能发送其他信息（控制信息和真实音视频等数据）<br>   如果每次发送一个握手chunk的话握手顺序会是这样：<br><br>    <img src="http://7xpoty.com1.z0.glb.clouddn.com/RTMP-HandShake.png" alt=""><br><br>    理论上来讲只要满足以上条件，如何安排6个Message的顺序都是可以的，但实际实现中为了在保证握手的身份验证功能的基础上尽量减少通信的次数，一般的发送顺序是这样的，这一点可以通过wireshark抓ffmpeg推流包进行验证：<br>    ｜client｜Server ｜<br>    ｜－－－C0+C1—-&gt;|<br>    ｜&lt;－－S0+S1+S2– |<br>    ｜－－－C2-－－－&gt; ｜<br><br> <font size="+1"><strong>3. RTMP Chunk Stream</strong></font>
 
 <p>  Chunk Stream是对传输RTMP Chunk的流的逻辑上的抽象，客户端和服务器之间有关RTMP的信息都在这个流上通信。这个流上的操作也是我们关注RTMP协议的重点。</p>
